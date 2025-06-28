@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393094165737",
+    "project_id": "akramlearningbloc",
+    "storage_bucket": "akramlearningbloc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393094165737:android:e4cc9108143bf9d9912c78",
+        "android_client_info": {
+          "package_name": "com.houalef.cryptochat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJn78N2oN_BhYeO9P0VlBXIeE8II0Y_FY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

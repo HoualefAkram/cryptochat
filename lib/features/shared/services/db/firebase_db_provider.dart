@@ -1,0 +1,51 @@
+import "package:cryptochat/features/chat/models/message.dart";
+import 'package:cryptochat/features/shared/services/db/db_provider.dart';
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:cryptochat/firebase_options.dart";
+import "dart:developer" as dev;
+
+import "package:firebase_core/firebase_core.dart";
+
+class FirebaseDbProvider implements DbProvider {
+  FirebaseFirestore get _db => FirebaseFirestore.instance;
+  static const String collectionPath = "chats";
+
+  @override
+  Future<void> sendMessage({
+    required String message,
+    required String owner,
+  }) async {
+    final Map<String, dynamic> data = {
+      "owner": owner,
+      "message": message,
+      "timeStamp": FieldValue.serverTimestamp(),
+    };
+    final DocumentReference<Map<String, dynamic>> docRef = await _db
+        .collection(collectionPath)
+        .add(data);
+    dev.log("Doc ${docRef.id} created: $data");
+  }
+
+  @override
+  Future<void> initialize() =>
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  @override
+  Future<List<Message>> getAllMesages() async {
+    final QuerySnapshot<Map<String, dynamic>> collection = await _db
+        .collection(collectionPath)
+        .get();
+    return collection.docs.map(Message.fromDoc).toList();
+  }
+
+  @override
+  Stream<Iterable<Message>> getMessageStream() {
+    dev.log("Starting stream");
+    final stream = _db.collection(collectionPath).snapshots().map((
+      QuerySnapshot<Map<String, dynamic>> collection,
+    ) {
+      return collection.docs.map(Message.fromDoc);
+    });
+    return stream;
+  }
+}
