@@ -1,6 +1,7 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loading_screen.dart';
+import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              CustomIcon.build(CIcon.messenger, height: 100, width: 100),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(hint: Text("Email")),

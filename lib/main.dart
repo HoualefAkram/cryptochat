@@ -3,7 +3,10 @@ import 'package:cryptochat/features/auth/services/auth_service.dart';
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
 import 'package:cryptochat/features/chat/views/chat_view.dart';
+import 'package:cryptochat/features/shared/cubits/theme_cubit/theme_cubit.dart';
+
 import 'package:cryptochat/features/shared/utils/routing/router.dart';
+import 'package:cryptochat/features/shared/utils/themes/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,16 +15,21 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => AuthBloc(AuthService.firebase())),
         BlocProvider(create: (context) => ChatCubit()),
       ],
-      child: MaterialApp(
-        title: 'Akram',
-        onGenerateRoute: ScreenRouter.onGenerateRoute,
-        theme: ThemeData.from(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        ),
-        home: const Main(),
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            title: 'Akram',
+            onGenerateRoute: ScreenRouter.onGenerateRoute,
+            theme: themeState is ThemeDarkState
+                ? CustomTheme.dark
+                : CustomTheme.light,
+            home: const Main(),
+          );
+        },
       ),
     ),
   );
