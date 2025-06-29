@@ -2,7 +2,6 @@ import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/services/auth_service.dart';
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
-import 'package:cryptochat/features/chat/services/chat_service.dart';
 import 'package:cryptochat/features/chat/views/chat_view.dart';
 import 'package:cryptochat/features/shared/utils/routing/router.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ChatService.initialize();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -40,6 +38,7 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     context.read<AuthBloc>().add(AuthInitializeEvent());
+    context.read<ChatCubit>().initialize();
     super.initState();
   }
 

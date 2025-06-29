@@ -15,4 +15,6 @@ class ChatCubit extends Cubit<ChatState> {
     required String message,
     required AuthUser owner,
   }) => ChatService.sendMessage(message: message, owner: owner);
+
+  Future<void> initialize() async => ChatService.initialize();
 }
