@@ -1,8 +1,11 @@
 import 'package:cryptochat/features/auth/models/auth_user.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/auth/services/auth_provider.dart';
+import 'package:cryptochat/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "dart:developer" as dev;
+
+import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseAuthProvider implements AuthenticationProvider {
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -23,6 +26,9 @@ class FirebaseAuthProvider implements AuthenticationProvider {
 
   @override
   Future<AuthUser?> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     final User? currentUser = _auth.currentUser;
     if (currentUser == null) return null;
     return AuthUser.fromUser(currentUser);

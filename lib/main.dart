@@ -38,7 +38,7 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     context.read<AuthBloc>().add(AuthInitializeEvent());
-    context.read<ChatCubit>().initialize();
+
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class _MainState extends State<Main> {
           return LoginView();
         } else {
           // Uninitialized
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
       },
     );

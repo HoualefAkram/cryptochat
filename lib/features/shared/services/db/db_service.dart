@@ -9,9 +9,6 @@ class DbService implements DbProvider {
   factory DbService.firebase() => DbService(FirebaseDbProvider());
 
   @override
-  Future<void> initialize() => provider.initialize();
-
-  @override
   Future<void> sendMessage({required Message message}) =>
       provider.sendMessage(message: message);
 

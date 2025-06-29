@@ -1,10 +1,8 @@
 import "package:cryptochat/features/chat/models/message.dart";
 import 'package:cryptochat/features/shared/services/db/db_provider.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:cryptochat/firebase_options.dart";
-import "dart:developer" as dev;
 
-import "package:firebase_core/firebase_core.dart";
+import "dart:developer" as dev;
 
 class FirebaseDbProvider implements DbProvider {
   FirebaseFirestore get _db => FirebaseFirestore.instance;
@@ -18,10 +16,6 @@ class FirebaseDbProvider implements DbProvider {
         .add(data);
     dev.log("Doc ${docRef.id} created: $data");
   }
-
-  @override
-  Future<void> initialize() =>
-      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   @override
   Future<List<Message>> getAllMesages() async {
