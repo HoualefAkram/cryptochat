@@ -84,6 +84,11 @@ class FirebaseAuthProvider implements AuthenticationProvider {
       await user.reload();
 
       return AuthUser.fromUser(user, displayName: name);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        throw AuthInvalidEmailFormatException(e.toString());
+      }
+      throw AuthFailedToLoginException(e.toString());
     } catch (e) {
       throw AuthFailedToRegister(e.toString());
     }

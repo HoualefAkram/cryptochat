@@ -53,7 +53,14 @@ class _LoginViewState extends State<LoginView> {
           } else if (authState.execption is AuthFailedToLoginException) {
             ESnackBar.error(
               context,
-              "Login failed: ${authState.execption.toString()}",
+              "Failed to login: ${authState.execption.toString()}",
+            );
+          } else if (authState.execption is AuthInvalidInputException) {
+            ESnackBar.error(context, "Invalid input!");
+          } else if (authState.execption != null) {
+            ESnackBar.error(
+              context,
+              "Error: ${authState.execption.toString()}",
             );
           }
         }

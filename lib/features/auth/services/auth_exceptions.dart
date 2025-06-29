@@ -34,6 +34,15 @@ class AuthFailedToSendResetPasswordEmail implements Exception {
   String toString() => description;
 }
 
+class AuthInvalidInputException implements Exception {
+  final String description;
+
+  AuthInvalidInputException(this.description);
+
+  @override
+  String toString() => description;
+}
+
 // generic
 class AuthFailedToLoginException implements Exception {
   final String description;

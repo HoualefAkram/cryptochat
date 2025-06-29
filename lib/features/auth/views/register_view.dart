@@ -46,14 +46,6 @@ class _RegisterViewState extends State<RegisterView> {
             Navigator.of(context).pop();
           }
         }
-        if (authState is AuthLoggedOutState) {
-          if (authState.execption != null) {
-            ESnackBar.error(
-              context,
-              "Failed to register: ${authState.execption.toString()}",
-            );
-          }
-        }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
