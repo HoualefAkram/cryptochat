@@ -1,5 +1,6 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
-import 'package:cryptochat/features/auth/blocs/login_view_cubit/login_view_cubit.dart';
+
+import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_cubit.dart';
 import 'package:cryptochat/features/auth/services/auth_service.dart';
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
@@ -59,7 +60,7 @@ class _MainState extends State<Main> {
           return ChatView();
         } else if (authState is AuthLoggedOutState) {
           return BlocProvider(
-            create: (context) => LoginViewCubit(),
+            create: (context) => ObscureTextCubit(),
             child: LoginView(),
           );
         } else {

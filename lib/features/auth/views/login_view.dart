@@ -1,11 +1,13 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
-import 'package:cryptochat/features/auth/blocs/login_view_cubit/login_view_cubit.dart';
+
+import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_cubit.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/shared/helpers/loading/loading_screen.dart';
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:cryptochat/features/shared/utils/themes/text_style_manager.dart';
+import 'package:cryptochat/features/shared/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,12 +60,13 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        appBar: CAppBar(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 120),
+              SizedBox(height: 64),
               CustomIcon.build(CIcon.messenger, height: 80, width: 80),
               SizedBox(height: 120),
               TextField(
@@ -74,20 +77,20 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               SizedBox(height: 12),
-              BlocBuilder<LoginViewCubit, LoginViewState>(
-                builder: (context, loginViewState) {
+              BlocBuilder<ObscureTextCubit, ObscureTextState>(
+                builder: (context, obscureTextState) {
                   return TextField(
                     controller: passwordController,
-                    obscureText: loginViewState.obsecureText,
+                    obscureText: obscureTextState.obsecureText,
                     decoration: InputDecoration(
                       hint: Text("Password"),
                       labelText: "Password",
                       suffixIcon: IconButton(
                         onPressed: context
-                            .read<LoginViewCubit>()
+                            .read<ObscureTextCubit>()
                             .toggleObscureText,
                         icon: Icon(
-                          loginViewState.obsecureText
+                          obscureTextState.obsecureText
                               ? Icons.visibility_off_outlined
                               : Icons.visibility_outlined,
                         ),

@@ -33,6 +33,9 @@ class CustomTheme {
         textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
       ),
     ),
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
+    ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.white,
       selectionHandleColor: Colors.blueAccent,

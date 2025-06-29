@@ -1,4 +1,4 @@
-import 'package:cryptochat/features/auth/blocs/login_view_cubit/login_view_cubit.dart';
+import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_cubit.dart';
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/auth/views/register_view.dart';
 import 'package:cryptochat/features/chat/views/chat_view.dart';
@@ -20,14 +20,17 @@ class ScreenRouter {
         return MaterialPageRoute(
           settings: RouteSettings(name: Routes.login),
           builder: (context) => BlocProvider(
-            create: (context) => LoginViewCubit(),
+            create: (context) => ObscureTextCubit(),
             child: LoginView(),
           ),
         );
       case Routes.register:
         return MaterialPageRoute(
           settings: RouteSettings(name: Routes.register),
-          builder: (context) => RegisterView(),
+          builder: (context) => BlocProvider(
+            create: (context) => ObscureTextCubit(),
+            child: RegisterView(),
+          ),
         );
       case Routes.chat:
         return MaterialPageRoute(
