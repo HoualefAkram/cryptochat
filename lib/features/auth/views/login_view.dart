@@ -116,7 +116,12 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               SizedBox(height: 12),
-              TextButton(onPressed: () {}, child: Text("Forgot password?")),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.resetPassword);
+                },
+                child: Text("Forgot password?"),
+              ),
               const Spacer(),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
