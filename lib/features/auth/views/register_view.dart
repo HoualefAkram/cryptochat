@@ -2,6 +2,7 @@ import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_cubit.dart';
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
+import 'package:cryptochat/features/shared/utils/themes/text_style_manager.dart';
 import 'package:cryptochat/features/shared/widgets/app_bar.dart';
 
 import 'package:flutter/material.dart';
@@ -118,6 +119,14 @@ class _RegisterViewState extends State<RegisterView> {
                     );
                   },
                   child: const Text("Register"),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                "Houalef Akram",
+                style: TextStyleManager.large(
+                  bold: true,
+                  color: Colors.grey.withAlpha(90),
                 ),
               ),
             ],

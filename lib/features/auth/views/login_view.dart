@@ -117,7 +117,7 @@ class _LoginViewState extends State<LoginView> {
               ),
               SizedBox(height: 12),
               TextButton(onPressed: () {}, child: Text("Forgot password?")),
-              Spacer(),
+              const Spacer(),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
                 height: 50,
