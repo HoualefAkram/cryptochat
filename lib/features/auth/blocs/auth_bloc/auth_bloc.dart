@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           name: name,
         );
         dev.log("register user: $user");
-        add(AuthLoginEvent(email: email, password: password));
+        emit(AuthLoggedOutState(registered: true));
       } catch (e, stack) {
         dev.log("(AuthBloc) Failed to register: $e, $stack");
         emit(AuthLoggedOutState(execption: e as Exception));

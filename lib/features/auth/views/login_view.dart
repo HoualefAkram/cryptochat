@@ -1,6 +1,8 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
+import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loading_screen.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
+import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,11 +34,23 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state.isLoading) {
+      listener: (context, authState) {
+        if (authState.isLoading) {
           LoadingScreen().show(context: context);
         } else {
           LoadingScreen().hide();
+        }
+        if (authState is AuthLoggedOutState) {
+          if (authState.execption is AuthInvalidCredentialsException) {
+            ESnackBar.error(context, "Invalid Credentials!");
+          } else if (authState.execption is AuthInvalidEmailFormatException) {
+            ESnackBar.error(context, "Invalid email format!");
+          } else if (authState.execption is AuthFailedToLoginException) {
+            ESnackBar.error(
+              context,
+              "Login failed: ${authState.execption.toString()}",
+            );
+          }
         }
       },
       child: Scaffold(

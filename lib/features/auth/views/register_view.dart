@@ -1,5 +1,6 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
-import 'package:cryptochat/features/shared/utils/routing/routes.dart';
+import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,10 +36,19 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, authState) {
-        if (authState is AuthLoggedInState) {
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil(Routes.chat, (route) => false);
+        if (authState is AuthLoggedOutState) {
+          if (authState.registered) {
+            ESnackBar.success(context, "Register done!");
+            Navigator.of(context).pop();
+          }
+        }
+        if (authState is AuthLoggedOutState) {
+          if (authState.execption != null) {
+            ESnackBar.error(
+              context,
+              "Failed to register: ${authState.execption.toString()}",
+            );
+          }
         }
       },
       child: Scaffold(
