@@ -18,9 +18,11 @@ final class AuthLoggedInState extends AuthState {
 final class AuthLoggedOutState extends AuthState {
   final Exception? execption;
   final bool registered;
+  final bool resetEmailSent;
   AuthLoggedOutState({
     this.execption,
     super.isLoading,
     this.registered = false,
+    this.resetEmailSent = false,
   });
 }

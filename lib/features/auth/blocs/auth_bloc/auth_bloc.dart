@@ -58,14 +58,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<AuthConfirmEmailEvent>((event, emit) async {
-      final String email = event.email;
-      await auth.confirmEmail(email: email);
-    });
-
     on<AuthResetPasswordEvent>((event, emit) async {
-      final String email = event.email;
-      await auth.resetPassword(email: email);
+      try {
+        final String email = event.email;
+        emit(AuthLoggedOutState(isLoading: true));
+        await auth.resetPassword(email: email);
+        emit(AuthLoggedOutState(resetEmailSent: true));
+      } catch (e) {
+        emit(AuthLoggedOutState(execption: e as Exception));
+      }
     });
   }
 }

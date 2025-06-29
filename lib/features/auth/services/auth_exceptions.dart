@@ -25,6 +25,15 @@ class AuthInvalidEmailFormatException implements Exception {
   String toString() => description;
 }
 
+class AuthFailedToSendResetPasswordEmail implements Exception {
+  final String description;
+
+  AuthFailedToSendResetPasswordEmail(this.description);
+
+  @override
+  String toString() => description;
+}
+
 // generic
 class AuthFailedToLoginException implements Exception {
   final String description;

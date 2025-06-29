@@ -91,6 +91,10 @@ class FirebaseAuthProvider implements AuthenticationProvider {
 
   @override
   Future<void> resetPassword({required String email}) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw AuthFailedToSendResetPasswordEmail(e.toString());
+    }
   }
 }

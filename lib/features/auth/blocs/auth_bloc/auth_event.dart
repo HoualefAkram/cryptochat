@@ -25,12 +25,6 @@ class AuthLoginEvent extends AuthEvent {
 
 class AuthLogoutEvent extends AuthEvent {}
 
-class AuthConfirmEmailEvent extends AuthEvent {
-  final String email;
-
-  AuthConfirmEmailEvent({required this.email});
-}
-
 class AuthResetPasswordEvent extends AuthEvent {
   final String email;
 
