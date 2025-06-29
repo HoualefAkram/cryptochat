@@ -135,31 +135,40 @@ class _ChatViewState extends State<ChatView> {
                             final Message msg = messages[index];
                             final bool isOwner = msg.owner == authState.user;
                             return Container(
-                              margin: EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: isOwner
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
+                              margin: EdgeInsets.all(2),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: isOwner
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      msg.owner.name,
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12,
+                                  if (!isOwner)
+                                    CircleAvatar(
+                                      maxRadius: 18,
+                                      backgroundColor: Colors.grey,
+                                      backgroundImage: NetworkImage(
+                                        "https://www.washingtonpost.com/news/the-intersect/wp-content/uploads/sites/32/2015/01/facebook-person.jpg",
                                       ),
                                     ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: isOwner
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
                                     children: [
                                       if (!isOwner)
-                                        CircleAvatar(
-                                          backgroundColor: Colors.grey,
+                                        Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Text(
+                                            msg.owner.name,
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12,
+                                            ),
+                                          ),
                                         ),
-                                      SizedBox(width: 4),
+
                                       Container(
                                         padding: EdgeInsets.all(8),
                                         constraints: BoxConstraints(
