@@ -7,9 +7,9 @@ class AuthUser {
 
   AuthUser({required this.email, required this.name, required this.isVerified});
 
-  factory AuthUser.fromUser(User user) => AuthUser(
+  factory AuthUser.fromUser(User user, {String? displayName}) => AuthUser(
     email: user.email!,
-    name: user.displayName!,
+    name: displayName ?? user.displayName!,
     isVerified: user.emailVerified,
   );
 

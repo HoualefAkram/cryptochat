@@ -56,6 +56,7 @@ class FirebaseAuthProvider implements AuthenticationProvider {
 
   @override
   Future<void> logout() async {
+    dev.log("Signing out...");
     await _auth.signOut();
   }
 
@@ -69,14 +70,14 @@ class FirebaseAuthProvider implements AuthenticationProvider {
       final UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       final User? user = userCredential.user;
-      dev.log("registered user; $user");
       if (user == null) {
         throw AuthFailedToRegister("User is null");
       }
 
       await user.updateDisplayName(name);
       await user.reload();
-      return AuthUser.fromUser(user);
+
+      return AuthUser.fromUser(user, displayName: name);
     } catch (e) {
       throw AuthFailedToRegister(e.toString());
     }
