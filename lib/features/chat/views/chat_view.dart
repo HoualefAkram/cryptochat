@@ -1,6 +1,9 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
+import 'package:cryptochat/features/shared/utils/themes/themes.dart';
+
+import 'package:cryptochat/features/shared/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,18 +15,44 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  late TextEditingController messageController;
+  late final TextEditingController messageController;
+  late final FocusNode focusNode;
+  late final ScrollController scrollController;
 
   @override
   void initState() {
     messageController = TextEditingController();
+    scrollController = ScrollController();
+    focusNode = FocusNode();
     super.initState();
   }
 
   @override
   void dispose() {
     messageController.dispose();
+    scrollController.dispose();
+    focusNode.dispose();
     super.dispose();
+  }
+
+  bool _isAtBottom() {
+    return !scrollController.hasClients ||
+        scrollController.offset >=
+            scrollController.position.maxScrollExtent - 70;
+  }
+
+  void scrollToBottom() {
+    if (_isAtBottom()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -32,32 +61,64 @@ class _ChatViewState extends State<ChatView> {
       builder: (context, authState) {
         if (authState is AuthLoggedInState) {
           return Scaffold(
-            appBar: AppBar(title: Text("Welcome, ${authState.user.name}")),
+            backgroundColor: Colors.black,
+            appBar: CAppBar(
+              color: Colors.black,
+              leading: Leading.back,
+              onPop: () {
+                context.read<AuthBloc>().add(AuthLogoutEvent());
+              },
+              leadingColor: Theme.of(context).primaryColor,
+              centerTitle: false,
+              title: Row(
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        minRadius: 22,
+                        backgroundImage: NetworkImage(
+                          "https://upload.wikimedia.org/wikipedia/fr/3/3f/USTO-MB_%28logo%29.jpg",
+                        ),
+                      ),
+                      Container(
+                        height: 16,
+                        width: 16,
+                        decoration: BoxDecoration(
+                          color: CustomColors.activeGreen,
+                          shape: BoxShape.circle,
+                          border: Border.all(width: 3),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 12),
+                  Text("M1RT 2024/2025"),
+                ],
+              ),
+              actions: [
+                Container(
+                  margin: EdgeInsets.all(12),
+                  child: Icon(
+                    Icons.call,
+                    color: Theme.of(context).primaryColor,
+                    size: 28,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(12),
+                  child: Icon(
+                    Icons.videocam,
+                    color: Theme.of(context).primaryColor,
+                    size: 28,
+                  ),
+                ),
+              ],
+            ),
             body: Center(
               child: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(AuthLogoutEvent());
-                    },
-                    child: const Text("Logout"),
-                  ),
-
-                  TextField(
-                    controller: messageController,
-                    decoration: InputDecoration(hint: Text("Mesage")),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (messageController.text.trim().isEmpty) return;
-                      await context.read<ChatCubit>().sendMessage(
-                        owner: authState.user,
-                        message: messageController.text,
-                      );
-                      messageController.clear();
-                    },
-                    child: const Text("Send message"),
-                  ),
                   Expanded(
                     child: StreamBuilder(
                       stream: context.read<ChatCubit>().getMessageStream(),
@@ -65,11 +126,13 @@ class _ChatViewState extends State<ChatView> {
                         if (!snapshot.hasData || snapshot.data == null) {
                           return const Text("No data");
                         }
-                        final List<Message> data = snapshot.data!.toList();
+                        final List<Message> messages = snapshot.data!.toList();
+                        scrollToBottom();
                         return ListView.builder(
-                          itemCount: data.length,
+                          controller: scrollController,
+                          itemCount: messages.length,
                           itemBuilder: (context, index) {
-                            final Message msg = data[index];
+                            final Message msg = messages[index];
                             final bool isOwner = msg.owner == authState.user;
                             return Container(
                               margin: EdgeInsets.all(8),
@@ -78,25 +141,51 @@ class _ChatViewState extends State<ChatView> {
                                     ? CrossAxisAlignment.end
                                     : CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    msg.owner.name,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 10,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      msg.owner.name,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: isOwner
-                                          ? Colors.blue
-                                          : Colors.green,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Text(
-                                      msg.message,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (!isOwner)
+                                        CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                      SizedBox(width: 4),
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        constraints: BoxConstraints(
+                                          maxWidth:
+                                              MediaQuery.sizeOf(context).width *
+                                              0.5,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isOwner
+                                              ? Theme.of(context).primaryColor
+                                              : CustomColors.bubleGrey,
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Text(
+                                            msg.message,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -105,6 +194,101 @@ class _ChatViewState extends State<ChatView> {
                         );
                       },
                     ),
+                  ),
+                  BlocBuilder<ChatCubit, ChatState>(
+                    builder: (context, chatState) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            // Group of icons (always present in tree)
+                            Row(
+                              children: [
+                                _buildIcon(
+                                  !chatState.hasText,
+                                  Icons.add_circle,
+                                  context,
+                                ),
+                                _buildIcon(
+                                  !chatState.hasText,
+                                  Icons.camera_alt_rounded,
+                                  context,
+                                ),
+                                _buildIcon(
+                                  !chatState.hasText,
+                                  Icons.image,
+                                  context,
+                                ),
+                                _buildIcon(
+                                  !chatState.hasText,
+                                  Icons.mic,
+                                  context,
+                                ),
+                              ],
+                            ),
+                            // TextField
+                            Expanded(
+                              child: TextField(
+                                controller: messageController,
+                                focusNode: focusNode,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.all(8),
+                                  fillColor: CustomColors.bubleGrey,
+                                  hintText: "Message",
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(64),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(64),
+                                  ),
+                                ),
+                                onChanged: context
+                                    .read<ChatCubit>()
+                                    .setTextState,
+                              ),
+                            ),
+                            // Send/thumb icon (always present in tree)
+                            chatState.hasText
+                                ? IconButton(
+                                    iconSize: 30,
+                                    onPressed: () async {
+                                      if (messageController.text
+                                          .trim()
+                                          .isEmpty) {
+                                        return;
+                                      }
+                                      await context
+                                          .read<ChatCubit>()
+                                          .sendMessage(
+                                            owner: authState.user,
+                                            message: messageController.text,
+                                          );
+                                      messageController.clear();
+                                    },
+                                    icon: Icon(
+                                      Icons.send,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  )
+                                : IconButton(
+                                    iconSize: 30,
+                                    onPressed: () {
+                                      context.read<ChatCubit>().sendMessage(
+                                        owner: authState.user,
+                                        message: "👍",
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.thumb_up_alt_rounded,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -115,5 +299,14 @@ class _ChatViewState extends State<ChatView> {
         }
       },
     );
+  }
+
+  Widget _buildIcon(bool visible, IconData icon, BuildContext context) {
+    return visible
+        ? Container(
+            margin: EdgeInsets.all(6),
+            child: Icon(icon, color: Theme.of(context).primaryColor, size: 30),
+          )
+        : const SizedBox.shrink(); // takes no space
   }
 }

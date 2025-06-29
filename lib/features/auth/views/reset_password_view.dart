@@ -50,7 +50,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CAppBar(leading: Leading.back, title: "Reset password"),
+        appBar: CAppBar(leading: Leading.back, title: Text("Reset password")),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(

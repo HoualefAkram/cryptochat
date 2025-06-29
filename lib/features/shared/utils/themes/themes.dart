@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class CustomTheme {
   static final dark = ThemeData(
-    primaryColor: Colors.blueAccent,
+    primaryColor: CustomColors.primaryBlue,
     appBarTheme: AppBarTheme(
       titleTextStyle: TextStyleManager.large(color: Colors.white, bold: true),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
-      color: Colors.blueAccent,
+      color: CustomColors.primaryBlue,
     ),
     scaffoldBackgroundColor: CustomColors.backgroundBlue,
     iconTheme: IconThemeData(color: Colors.white),
@@ -18,7 +18,7 @@ class CustomTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(Colors.blueAccent),
+        backgroundColor: WidgetStatePropertyAll(CustomColors.primaryBlue),
         foregroundColor: WidgetStatePropertyAll(Colors.white),
         textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
       ),
@@ -31,8 +31,10 @@ class CustomTheme {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(Colors.blueAccent),
-        side: WidgetStatePropertyAll(BorderSide(color: Colors.blueAccent)),
+        foregroundColor: WidgetStatePropertyAll(CustomColors.primaryBlue),
+        side: WidgetStatePropertyAll(
+          BorderSide(color: CustomColors.primaryBlue),
+        ),
         textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
       ),
     ),
@@ -41,8 +43,8 @@ class CustomTheme {
     ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.white,
-      selectionHandleColor: Colors.blueAccent,
-      selectionColor: Colors.blueAccent.withAlpha(40),
+      selectionHandleColor: CustomColors.primaryBlue,
+      selectionColor: CustomColors.primaryBlue.withAlpha(40),
     ),
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: TextStyleManager.hintText,
@@ -66,4 +68,7 @@ class CustomTheme {
 
 class CustomColors {
   static final Color backgroundBlue = Color(0XFF121F28);
+  static final Color primaryBlue = Color(0XFF136DFE);
+  static final Color activeGreen = Color(0XFF32A73A);
+  static final Color bubleGrey = Color(0XFF333333);
 }

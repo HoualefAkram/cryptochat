@@ -49,7 +49,7 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CAppBar(leading: Leading.back, title: "New account"),
+        appBar: CAppBar(leading: Leading.back, title: Text("New account")),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
