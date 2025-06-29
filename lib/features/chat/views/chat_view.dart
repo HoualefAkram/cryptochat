@@ -62,7 +62,7 @@ class _ChatViewState extends State<ChatView> {
                     child: StreamBuilder(
                       stream: context.read<ChatCubit>().getMessageStream(),
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData && snapshot.data == null) {
+                        if (!snapshot.hasData || snapshot.data == null) {
                           return const Text("No data");
                         }
                         final List<Message> data = snapshot.data!.toList();
