@@ -70,7 +70,37 @@ class _ChatViewState extends State<ChatView> {
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final Message msg = data[index];
-                            return Text("${msg.owner.name} : ${msg.message}");
+                            final bool isOwner = msg.owner == authState.user;
+                            return Container(
+                              margin: EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: isOwner
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    msg.owner.name,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: isOwner
+                                          ? Colors.blue
+                                          : Colors.green,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Text(
+                                      msg.message,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                         );
                       },

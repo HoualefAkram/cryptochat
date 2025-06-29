@@ -1,11 +1,16 @@
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthUser {
+class AuthUser extends Equatable {
   final String email;
   final String name;
   final bool isVerified;
 
-  AuthUser({required this.email, required this.name, required this.isVerified});
+  const AuthUser({
+    required this.email,
+    required this.name,
+    required this.isVerified,
+  });
 
   factory AuthUser.fromUser(User user, {String? displayName}) => AuthUser(
     email: user.email!,
@@ -28,4 +33,7 @@ class AuthUser {
   @override
   String toString() =>
       "AuthUser(email: $email, name: $name, isVerified: $isVerified)";
+
+  @override
+  List<Object?> get props => [email, name, isVerified];
 }
