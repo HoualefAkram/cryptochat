@@ -16,12 +16,12 @@ class LoadingScreen {
     String? text,
     Widget? image,
   }) {
-    if (controller?.update(text ?? "Loading...") ?? false) {
+    if (controller?.update(text ?? "") ?? false) {
       return;
     } else {
       controller = showOverlay(
         context: context,
-        text: text ?? "Loading...",
+        text: text ?? "",
         image: image,
       );
     }
@@ -55,10 +55,7 @@ class LoadingScreen {
                 maxHeight: size.height * 0.8,
                 minWidth: size.width * 0.5,
               ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(4),
-              ),
+
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(

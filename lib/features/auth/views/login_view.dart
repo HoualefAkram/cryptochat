@@ -1,7 +1,7 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/blocs/login_view_cubit/login_view_cubit.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
-import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loading_screen.dart';
+import 'package:cryptochat/features/shared/helpers/loading/loading_screen.dart';
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
