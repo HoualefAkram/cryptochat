@@ -30,6 +30,9 @@ void main() async {
                 ? CustomTheme.dark
                 : CustomTheme.light,
             home: const Main(),
+            builder: (context, child) {
+              return MediaQuery.withNoTextScaling(child: child!);
+            },
           );
         },
       ),
