@@ -56,7 +56,7 @@ class LoadingScreen {
                 minWidth: size.width * 0.5,
               ),
               decoration: BoxDecoration(
-                // color: Theme.of(context).colors.background,
+                color: Theme.of(context).primaryColorLight,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Padding(
@@ -74,9 +74,7 @@ class LoadingScreen {
                       ),
                       Container(
                         margin: const EdgeInsets.all(10),
-                        child: CircularProgressIndicator(
-                          // color: Theme.of(context).colors.onsurface,
-                        ),
+                        child: CircularProgressIndicator(),
                       ),
                       StreamBuilder(
                         stream: loadingScreenText.stream,

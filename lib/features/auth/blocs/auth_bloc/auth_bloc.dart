@@ -41,18 +41,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<AuthRegisterEvent>((event, emit) async {
-      emit(AuthLoggedOutState(isLoading: true));
-      final String email = event.email;
-      final String password = event.password;
-      final String name = event.name;
-      final AuthUser user = await auth.register(
-        email: email,
-        password: password,
-        name: name,
-      );
-      dev.log("register user: $user");
-
-      add(AuthLoginEvent(email: email, password: password));
+      try {
+        emit(AuthLoggedOutState(isLoading: true));
+        final String email = event.email;
+        final String password = event.password;
+        final String name = event.name;
+        final AuthUser user = await auth.register(
+          email: email,
+          password: password,
+          name: name,
+        );
+        dev.log("register user: $user");
+        add(AuthLoginEvent(email: email, password: password));
+      } catch (e, stack) {
+        dev.log("(AuthBloc) Failed to register: $e, $stack");
+        emit(AuthLoggedOutState(execption: e as Exception));
+      }
     });
 
     on<AuthConfirmEmailEvent>((event, emit) async {

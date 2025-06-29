@@ -2,6 +2,7 @@ import 'package:cryptochat/features/auth/models/auth_user.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/auth/services/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import "dart:developer" as dev;
 
 class FirebaseAuthProvider implements AuthenticationProvider {
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -64,15 +65,21 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     required String password,
     required String name,
   }) async {
-    final UserCredential userCredential = await _auth
-        .createUserWithEmailAndPassword(email: email, password: password);
-    final User? user = userCredential.user;
-    if (user == null) {
-      throw Exception("User is null");
+    try {
+      final UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final User? user = userCredential.user;
+      dev.log("registered user; $user");
+      if (user == null) {
+        throw AuthFailedToRegister("User is null");
+      }
+
+      await user.updateDisplayName(name);
+      await user.reload();
+      return AuthUser.fromUser(user);
+    } catch (e) {
+      throw AuthFailedToRegister(e.toString());
     }
-    await user.updateDisplayName(name);
-    await user.reload();
-    return AuthUser.fromUser(user);
   }
 
   @override

@@ -1,3 +1,12 @@
+class AuthFailedToRegister implements Exception {
+  final String description;
+
+  AuthFailedToRegister(this.description);
+
+  @override
+  String toString() => description;
+}
+
 class AuthInvalidCredentialsException implements Exception {
   final String description;
 

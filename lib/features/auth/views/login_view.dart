@@ -1,5 +1,6 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loading_screen.dart';
+import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -43,8 +44,15 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(controller: emailController),
-              TextField(controller: passwordController),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(hint: Text("Email")),
+              ),
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(hint: Text("Passwrod")),
+              ),
               ElevatedButton(
                 onPressed: () {
                   context.read<AuthBloc>().add(
@@ -57,7 +65,12 @@ class _LoginViewState extends State<LoginView> {
                 child: const Text("Login"),
               ),
 
-              ElevatedButton(onPressed: () {}, child: const Text("Register")),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.register);
+                },
+                child: const Text("Register"),
+              ),
             ],
           ),
         ),

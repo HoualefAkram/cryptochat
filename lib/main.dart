@@ -18,6 +18,9 @@ void main() async {
       child: MaterialApp(
         title: 'Akram',
         onGenerateRoute: ScreenRouter.onGenerateRoute,
+        theme: ThemeData.from(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        ),
         home: const Main(),
       ),
     ),
