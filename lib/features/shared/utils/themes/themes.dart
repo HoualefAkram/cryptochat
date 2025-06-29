@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 class CustomTheme {
   static final dark = ThemeData(
     primaryColor: Colors.blueAccent,
+    appBarTheme: AppBarTheme(
+      titleTextStyle: TextStyleManager.large(color: Colors.white),
+    ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: Colors.blueAccent,
     ),

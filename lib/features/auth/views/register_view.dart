@@ -57,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CAppBar(leading: Leading.back),
+        appBar: CAppBar(leading: Leading.back, title: "New account"),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -118,7 +118,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     );
                   },
-                  child: const Text("Register"),
+                  child: const Text("Create account"),
                 ),
               ),
               const Spacer(),

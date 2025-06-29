@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 class CAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Leading leading;
   final Color? color;
-  const CAppBar({super.key, this.leading = Leading.none, this.color});
+  final String? title;
+  const CAppBar({
+    super.key,
+    this.leading = Leading.none,
+    this.color,
+    this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: color ?? Theme.of(context).scaffoldBackgroundColor,
       leading: _getLeading(context, leading),
+      centerTitle: true,
+      title: title != null ? Text(title!) : null,
     );
   }
 
