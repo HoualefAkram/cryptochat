@@ -4,6 +4,7 @@ import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loadi
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
+import 'package:cryptochat/features/shared/utils/themes/text_style_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,39 +56,86 @@ class _LoginViewState extends State<LoginView> {
         }
       },
       child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomIcon.build(CIcon.messenger, height: 100, width: 100),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(hint: Text("Email")),
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(hint: Text("Passwrod")),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(
-                    AuthLoginEvent(
-                      email: emailController.text,
-                      password: passwordController.text,
+        resizeToAvoidBottomInset: true,
+        body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 120),
+                    CustomIcon.build(CIcon.messenger, height: 80, width: 80),
+                    SizedBox(height: 120),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        hint: Text("Email", style: TextStyleManager.hintText),
+                      ),
                     ),
-                  );
-                },
-                child: const Text("Login"),
+                    SizedBox(height: 12),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hint: Text(
+                          "Password",
+                          style: TextStyleManager.hintText,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(
+                            AuthLoginEvent(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            ),
+                          );
+                        },
+                        child: Text("Log in", style: TextStyleManager.large()),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyleManager.large(),
+                      ),
+                    ),
+                    Spacer(),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 50,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.register);
+                        },
+                        child: const Text("Create new account"),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Houalef Akram",
+                      style: TextStyleManager.large(
+                        bold: true,
+                        color: Colors.grey.withAlpha(90),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(Routes.register);
-                },
-                child: const Text("Register"),
-              ),
-            ],
+            ),
           ),
         ),
       ),
