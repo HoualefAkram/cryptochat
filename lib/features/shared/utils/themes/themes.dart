@@ -33,6 +33,7 @@ class CustomTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      suffixIconColor: Colors.grey,
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.grey),
         borderRadius: BorderRadius.circular(12),

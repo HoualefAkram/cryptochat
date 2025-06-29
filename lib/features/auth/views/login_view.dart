@@ -1,4 +1,5 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
+import 'package:cryptochat/features/auth/blocs/login_view_cubit/login_view_cubit.dart';
 import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/shared/helpers/loading/withoutProgress/loading_screen.dart';
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
@@ -72,12 +73,26 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
               SizedBox(height: 12),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hint: Text("Password", style: TextStyleManager.hintText),
-                ),
+              BlocBuilder<LoginViewCubit, LoginViewState>(
+                builder: (context, loginViewState) {
+                  return TextField(
+                    controller: passwordController,
+                    obscureText: loginViewState.obsecureText,
+                    decoration: InputDecoration(
+                      hint: Text("Password", style: TextStyleManager.hintText),
+                      suffixIcon: IconButton(
+                        onPressed: context
+                            .read<LoginViewCubit>()
+                            .toggleObscureText,
+                        icon: Icon(
+                          loginViewState.obsecureText
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 12),
               SizedBox(
