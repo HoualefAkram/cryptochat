@@ -69,7 +69,8 @@ class _LoginViewState extends State<LoginView> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hint: Text("Email", style: TextStyleManager.hintText),
+                  hint: Text("Email"),
+                  labelText: "Email",
                 ),
               ),
               SizedBox(height: 12),
@@ -79,7 +80,8 @@ class _LoginViewState extends State<LoginView> {
                     controller: passwordController,
                     obscureText: loginViewState.obsecureText,
                     decoration: InputDecoration(
-                      hint: Text("Password", style: TextStyleManager.hintText),
+                      hint: Text("Password"),
+                      labelText: "Password",
                       suffixIcon: IconButton(
                         onPressed: context
                             .read<LoginViewCubit>()
@@ -107,17 +109,11 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     );
                   },
-                  child: Text("Log in", style: TextStyleManager.large()),
+                  child: Text("Log in"),
                 ),
               ),
               SizedBox(height: 12),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  "Forgot password?",
-                  style: TextStyleManager.large(),
-                ),
-              ),
+              TextButton(onPressed: () {}, child: Text("Forgot password?")),
               Spacer(),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,

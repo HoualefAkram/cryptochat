@@ -14,10 +14,14 @@ class CustomTheme {
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(Colors.blueAccent),
         foregroundColor: WidgetStatePropertyAll(Colors.white),
+        textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(Colors.white)),
+      style: ButtonStyle(
+        foregroundColor: WidgetStatePropertyAll(Colors.white),
+        textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
+      ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
@@ -32,6 +36,8 @@ class CustomTheme {
       selectionColor: Colors.blueAccent.withAlpha(40),
     ),
     inputDecorationTheme: InputDecorationTheme(
+      hintStyle: TextStyleManager.hintText,
+      labelStyle: TextStyleManager.hintText,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       suffixIconColor: Colors.grey,
       focusedBorder: OutlineInputBorder(
