@@ -5,7 +5,7 @@ class CustomTheme {
   static final dark = ThemeData(
     primaryColor: Colors.blueAccent,
     appBarTheme: AppBarTheme(
-      titleTextStyle: TextStyleManager.large(color: Colors.white),
+      titleTextStyle: TextStyleManager.large(color: Colors.white, bold: true),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: Colors.blueAccent,
