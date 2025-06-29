@@ -34,11 +34,13 @@ class FirebaseDbProvider implements DbProvider {
   @override
   Stream<Iterable<Message>> getMessageStream() {
     dev.log("Starting stream");
-    final stream = _db.collection(collectionPath).snapshots().map((
-      QuerySnapshot<Map<String, dynamic>> collection,
-    ) {
-      return collection.docs.map(Message.fromDoc);
-    });
+    final stream = _db
+        .collection(collectionPath)
+        .orderBy('dateTime', descending: false)
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> collection) {
+          return collection.docs.map(Message.fromDoc);
+        });
     return stream;
   }
 }

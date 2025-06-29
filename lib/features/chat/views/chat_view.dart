@@ -1,6 +1,6 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
+import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
-import 'package:cryptochat/features/chat/services/chat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,16 +38,6 @@ class _ChatViewState extends State<ChatView> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      ChatService.sendMessage(
-                        owner: authState.user,
-                        message: "Akran message",
-                      );
-                    },
-                    child: const Text("Send message"),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: () {
                       context.read<AuthBloc>().add(AuthLogoutEvent());
                     },
                     child: const Text("Logout"),
@@ -57,10 +47,20 @@ class _ChatViewState extends State<ChatView> {
                     controller: messageController,
                     decoration: InputDecoration(hint: Text("Mesage")),
                   ),
-
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (messageController.text.trim().isEmpty) return;
+                      await context.read<ChatCubit>().sendMessage(
+                        owner: authState.user,
+                        message: messageController.text,
+                      );
+                      messageController.clear();
+                    },
+                    child: const Text("Send message"),
+                  ),
                   Expanded(
                     child: StreamBuilder(
-                      stream: ChatService.getMessageStream(),
+                      stream: context.read<ChatCubit>().getMessageStream(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData && snapshot.data == null) {
                           return const Text("No data");
