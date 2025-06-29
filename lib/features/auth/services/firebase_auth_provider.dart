@@ -1,4 +1,5 @@
 import 'package:cryptochat/features/auth/models/auth_user.dart';
+import 'package:cryptochat/features/auth/services/auth_exceptions.dart';
 import 'package:cryptochat/features/auth/services/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,7 +13,7 @@ class FirebaseAuthProvider implements AuthenticationProvider {
       handleCodeInApp: true,
       androidPackageName: 'com.houalef.cryptochat',
       androidInstallApp: true,
-      androidMinimumVersion: '21',
+      androidMinimumVersion: '23',
       iOSBundleId: 'com.houalef.cryptochat',
     );
 
@@ -31,14 +32,25 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     required String email,
     required String password,
   }) async {
-    final UserCredential userCredential = await _auth
-        .signInWithEmailAndPassword(email: email, password: password);
+    try {
+      final UserCredential userCredential = await _auth
+          .signInWithEmailAndPassword(email: email, password: password);
 
-    final User? user = userCredential.user;
-    if (user == null) {
-      throw Exception("User is null");
+      final User? user = userCredential.user;
+      if (user == null) {
+        throw Exception("User is null");
+      }
+      return AuthUser.fromUser(user);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        throw AuthInvalidCredentialsException(e.toString());
+      } else if (e.code == 'invalid-email') {
+        throw AuthInvalidEmailFormatException(e.toString());
+      }
+      throw AuthFailedToLoginException(e.toString());
+    } catch (e) {
+      throw AuthFailedToLoginException(e.toString());
     }
-    return AuthUser.fromUser(user);
   }
 
   @override

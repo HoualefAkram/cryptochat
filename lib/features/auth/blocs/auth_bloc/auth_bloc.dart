@@ -20,11 +20,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<AuthLoginEvent>((event, emit) async {
-      emit(AuthLoggedOutState(isLoading: true));
-      final String email = event.email;
-      final String password = event.password;
-      final AuthUser user = await auth.login(email: email, password: password);
-      emit(AuthLoggedInState(user: user));
+      try {
+        emit(AuthLoggedOutState(isLoading: true));
+        final String email = event.email;
+        final String password = event.password;
+        final AuthUser user = await auth.login(
+          email: email,
+          password: password,
+        );
+        emit(AuthLoggedInState(user: user));
+      } catch (e, stack) {
+        dev.log("(AuthBloc) Failed to login: $e, $stack");
+        emit(AuthLoggedOutState(execption: e as Exception));
+      }
     });
 
     on<AuthLogoutEvent>((event, emit) async {

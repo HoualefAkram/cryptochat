@@ -12,10 +12,10 @@ final class AuthUninitializedState extends AuthState {
 
 final class AuthLoggedInState extends AuthState {
   final AuthUser user;
-  AuthLoggedInState({required this.user, super.isLoading = false});
+  AuthLoggedInState({required this.user, super.isLoading});
 }
 
 final class AuthLoggedOutState extends AuthState {
   final Exception? execption;
-  AuthLoggedOutState({this.execption, super.isLoading = false});
+  AuthLoggedOutState({this.execption, super.isLoading});
 }
