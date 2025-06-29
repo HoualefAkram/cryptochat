@@ -4,12 +4,35 @@ class AuthEvent {}
 
 class AuthInitializeEvent extends AuthEvent {}
 
-class AuthRegisterEvent extends AuthEvent {}
+class AuthRegisterEvent extends AuthEvent {
+  final String email;
+  final String password;
+  final String name;
 
-class AuthLoginEvent extends AuthEvent {}
+  AuthRegisterEvent({
+    required this.email,
+    required this.password,
+    required this.name,
+  });
+}
+
+class AuthLoginEvent extends AuthEvent {
+  final String email;
+  final String password;
+
+  AuthLoginEvent({required this.email, required this.password});
+}
 
 class AuthLogoutEvent extends AuthEvent {}
 
-class AuthConfirmEmailEvent extends AuthEvent {}
+class AuthConfirmEmailEvent extends AuthEvent {
+  final String email;
 
-class AuthResetPasswordEvent extends AuthEvent {}
+  AuthConfirmEmailEvent({required this.email});
+}
+
+class AuthResetPasswordEvent extends AuthEvent {
+  final String email;
+
+  AuthResetPasswordEvent({required this.email});
+}

@@ -1,15 +1,21 @@
 part of 'auth_bloc.dart';
 
-class AuthState {}
+class AuthState {
+  final bool isLoading;
+
+  AuthState({this.isLoading = false});
+}
 
 final class AuthUninitializedState extends AuthState {
-  final Exception? execption;
-  AuthUninitializedState({this.execption});
+  AuthUninitializedState({super.isLoading});
 }
 
-final class AuthInitializedState extends AuthState {
+final class AuthLoggedInState extends AuthState {
   final AuthUser user;
-  AuthInitializedState({required this.user});
+  AuthLoggedInState({required this.user, super.isLoading = false});
 }
 
-final class AuthLoadingState extends AuthState {}
+final class AuthLoggedOutState extends AuthState {
+  final Exception? execption;
+  AuthLoggedOutState({this.execption, super.isLoading = false});
+}
