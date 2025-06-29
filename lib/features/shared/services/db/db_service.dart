@@ -12,8 +12,8 @@ class DbService implements DbProvider {
   Future<void> initialize() => provider.initialize();
 
   @override
-  Future<void> sendMessage({required String message, required String owner}) =>
-      provider.sendMessage(message: message, owner: owner);
+  Future<void> sendMessage({required Message message}) =>
+      provider.sendMessage(message: message);
 
   @override
   Stream<Iterable<Message>> getMessageStream() => provider.getMessageStream();

@@ -13,6 +13,18 @@ class AuthUser {
     isVerified: user.emailVerified,
   );
 
+  Map<String, dynamic> toJson() => {
+    "email": email,
+    "name": name,
+    "isVerified": isVerified,
+  };
+
+  factory AuthUser.fromJson(Map<String, dynamic> json) => AuthUser(
+    email: json["email"],
+    name: json["name"],
+    isVerified: json["isVerified"],
+  );
+
   @override
   String toString() =>
       "AuthUser(email: $email, name: $name, isVerified: $isVerified)";

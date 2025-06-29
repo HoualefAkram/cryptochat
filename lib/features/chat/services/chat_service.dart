@@ -1,3 +1,4 @@
+import 'package:cryptochat/features/auth/models/auth_user.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
 import 'package:cryptochat/features/shared/services/db/db_service.dart';
 
@@ -6,9 +7,17 @@ class ChatService {
 
   static Future<void> initialize() => _db.initialize();
 
-  static Future<void> sendMessage({required String message}) async {
-    // TODO: get owner from login
-    _db.sendMessage(message: message, owner: "akram");
+  static Future<void> sendMessage({
+    required String message,
+    required AuthUser owner,
+  }) async {
+    _db.sendMessage(
+      message: Message(
+        owner: owner,
+        message: message,
+        dateTime: DateTime.now(),
+      ),
+    );
   }
 
   static Future<List<Message>> getAllMesages() => _db.getAllMesages();

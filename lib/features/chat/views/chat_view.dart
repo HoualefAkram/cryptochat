@@ -4,8 +4,27 @@ import 'package:cryptochat/features/chat/services/chat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   const ChatView({super.key});
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  late TextEditingController messageController;
+
+  @override
+  void initState() {
+    messageController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +38,10 @@ class ChatView extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      ChatService.sendMessage(message: "Akran message");
+                      ChatService.sendMessage(
+                        owner: authState.user,
+                        message: "Akran message",
+                      );
                     },
                     child: const Text("Send message"),
                   ),
@@ -29,6 +51,11 @@ class ChatView extends StatelessWidget {
                       context.read<AuthBloc>().add(AuthLogoutEvent());
                     },
                     child: const Text("Logout"),
+                  ),
+
+                  TextField(
+                    controller: messageController,
+                    decoration: InputDecoration(hint: Text("Mesage")),
                   ),
 
                   Expanded(
@@ -43,7 +70,7 @@ class ChatView extends StatelessWidget {
                           itemCount: data.length,
                           itemBuilder: (context, index) {
                             final Message msg = data[index];
-                            return Text("${msg.owner} : ${msg.message}");
+                            return Text("${msg.owner.name} : ${msg.message}");
                           },
                         );
                       },

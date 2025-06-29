@@ -1,26 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cryptochat/features/auth/models/auth_user.dart';
 
 class Message {
-  final String owner;
+  final AuthUser owner;
   final String message;
-  final Timestamp? timeStamp;
+  final DateTime dateTime;
 
-  Message({
-    required this.owner,
-    required this.message,
-    required this.timeStamp,
-  });
+  Message({required this.owner, required this.message, required this.dateTime});
 
   factory Message.fromDoc(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
     final Map<String, dynamic> data = doc.data();
     return Message(
-      owner: data["owner"],
+      owner: AuthUser.fromJson(data),
       message: data["message"],
-      timeStamp: data["timeStamp"],
+      dateTime: DateTime.parse(data["dateTime"]),
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    ...owner.toJson(),
+    "message": message,
+    "dateTime": dateTime.toIso8601String(),
+  };
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+    owner: AuthUser.fromJson(json),
+    message: json["message"],
+    dateTime: DateTime.parse(json["dateTime"]),
+  );
+
   @override
   String toString() =>
-      "Message(owner: $owner, value: $message, timeStamp: $timeStamp)";
+      "Message(owner: $owner, value: $message, dateTime: $dateTime)";
 }

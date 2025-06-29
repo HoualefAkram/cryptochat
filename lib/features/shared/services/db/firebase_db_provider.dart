@@ -11,15 +11,8 @@ class FirebaseDbProvider implements DbProvider {
   static const String collectionPath = "chats";
 
   @override
-  Future<void> sendMessage({
-    required String message,
-    required String owner,
-  }) async {
-    final Map<String, dynamic> data = {
-      "owner": owner,
-      "message": message,
-      "timeStamp": FieldValue.serverTimestamp(),
-    };
+  Future<void> sendMessage({required Message message}) async {
+    final Map<String, dynamic> data = message.toJson();
     final DocumentReference<Map<String, dynamic>> docRef = await _db
         .collection(collectionPath)
         .add(data);
