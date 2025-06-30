@@ -13,8 +13,9 @@ class CustomTheme {
     scaffoldBackgroundColor: CustomColors.backgroundBlue,
     iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(
-      bodyLarge: TextStyleManager.large(color: Colors.white),
+      bodySmall: TextStyleManager.small(color: Colors.white),
       bodyMedium: TextStyleManager.medium(color: Colors.white),
+      bodyLarge: TextStyleManager.large(color: Colors.white),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(

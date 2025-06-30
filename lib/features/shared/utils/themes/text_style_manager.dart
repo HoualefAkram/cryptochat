@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
 
 class TextStyleManager {
+  static const double _smallSize = 12;
+  static const double _mediumSize = 14;
   static const double _largeSize = 16;
 
-  static const double _mediumSize = 14;
+  static final TextStyle _defaultStyle = TextStyle(fontFamily: "Roboto");
 
-  static TextStyle large({bool bold = false, Color? color}) {
-    return TextStyle(
-      fontSize: _largeSize,
+  static TextStyle small({bool bold = false, Color? color}) {
+    return _defaultStyle.copyWith(
+      fontSize: _smallSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+      fontWeight: bold ? FontWeight.w500 : FontWeight.w400,
     );
   }
 
   static TextStyle medium({bool bold = false, Color? color}) {
-    return TextStyle(
+    return _defaultStyle.copyWith(
       fontSize: _mediumSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+      fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
+    );
+  }
+
+  static TextStyle large({bool bold = false, Color? color}) {
+    return _defaultStyle.copyWith(
+      fontSize: _largeSize,
+      color: color,
+      fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
     );
   }
 
