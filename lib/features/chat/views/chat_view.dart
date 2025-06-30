@@ -38,7 +38,7 @@ class _ChatViewState extends State<ChatView> {
       scrollController.offset >= scrollController.position.maxScrollExtent - 70;
 
   bool _isUp() {
-    if (!scrollController.hasClients) return true;
+    if (!scrollController.hasClients) return false;
 
     final distanceFromBottom =
         scrollController.position.maxScrollExtent - scrollController.offset;
