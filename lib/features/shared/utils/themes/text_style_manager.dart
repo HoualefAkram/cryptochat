@@ -9,7 +9,7 @@ class TextStyleManager {
     return TextStyle(
       fontSize: _largeSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.w500,
+      fontWeight: bold ? FontWeight.bold : FontWeight.normal,
     );
   }
 
@@ -17,7 +17,7 @@ class TextStyleManager {
     return TextStyle(
       fontSize: _mediumSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.w500,
+      fontWeight: bold ? FontWeight.bold : FontWeight.normal,
     );
   }
 

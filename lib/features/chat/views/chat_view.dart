@@ -167,7 +167,7 @@ class _ChatViewState extends State<ChatView> {
                                     children: [
                                       if (!isOwner)
                                         CircleAvatar(
-                                          maxRadius: 18,
+                                          maxRadius: 14,
                                           backgroundColor: Colors.grey,
                                           backgroundImage: NetworkImage(
                                             "https://www.washingtonpost.com/news/the-intersect/wp-content/uploads/sites/32/2015/01/facebook-person.jpg",
@@ -209,16 +209,11 @@ class _ChatViewState extends State<ChatView> {
                                               borderRadius:
                                                   BorderRadius.circular(24),
                                             ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                2.0,
-                                              ),
-                                              child: Text(
-                                                msg.message,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
+                                            child: Text(
+                                              msg.message,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyLarge?.copyWith(),
                                             ),
                                           ),
                                         ],
