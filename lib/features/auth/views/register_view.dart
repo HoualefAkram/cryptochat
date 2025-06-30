@@ -99,7 +99,7 @@ class _RegisterViewState extends State<RegisterView> {
               SizedBox(height: 12),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
-                height: 50,
+                height: 46,
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(
@@ -116,7 +116,7 @@ class _RegisterViewState extends State<RegisterView> {
               const Spacer(),
               Text(
                 "Houalef Akram",
-                style: TextStyleManager.large(
+                style: TextStyleManager.medium(
                   bold: true,
                   color: Colors.grey.withAlpha(90),
                 ),

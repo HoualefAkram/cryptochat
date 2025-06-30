@@ -5,7 +5,7 @@ class CustomTheme {
   static final dark = ThemeData(
     primaryColor: CustomColors.primaryBlue,
     appBarTheme: AppBarTheme(
-      titleTextStyle: TextStyleManager.large(color: Colors.white, bold: true),
+      titleTextStyle: TextStyleManager.medium(color: Colors.white, bold: true),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: CustomColors.primaryBlue,
@@ -13,20 +13,20 @@ class CustomTheme {
     scaffoldBackgroundColor: CustomColors.backgroundBlue,
     iconTheme: IconThemeData(color: Colors.white),
     textTheme: TextTheme(
-      bodyLarge: TextStyleManager.large(color: Colors.white),
+      bodyLarge: TextStyleManager.medium(color: Colors.white),
       bodyMedium: TextStyleManager.medium(color: Colors.white),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(CustomColors.primaryBlue),
         foregroundColor: WidgetStatePropertyAll(Colors.white),
-        textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
+        textStyle: WidgetStatePropertyAll(TextStyleManager.medium()),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStatePropertyAll(Colors.white),
-        textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
+        textStyle: WidgetStatePropertyAll(TextStyleManager.medium()),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -35,7 +35,7 @@ class CustomTheme {
         side: WidgetStatePropertyAll(
           BorderSide(color: CustomColors.primaryBlue),
         ),
-        textStyle: WidgetStatePropertyAll(TextStyleManager.large()),
+        textStyle: WidgetStatePropertyAll(TextStyleManager.medium()),
       ),
     ),
     iconButtonTheme: IconButtonThemeData(

@@ -66,10 +66,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   labelText: "Email",
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 18),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
-                height: 50,
+                height: 46,
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(
@@ -82,7 +82,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               const Spacer(),
               Text(
                 "Houalef Akram",
-                style: TextStyleManager.large(
+                style: TextStyleManager.medium(
                   bold: true,
                   color: Colors.grey.withAlpha(90),
                 ),

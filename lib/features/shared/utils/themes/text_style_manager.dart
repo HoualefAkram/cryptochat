@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class TextStyleManager {
-  static const double _largeSize = 18;
+  static const double _largeSize = 16;
 
-  static const double _mediumSize = 16;
+  static const double _mediumSize = 14;
 
   static TextStyle large({bool bold = false, Color? color}) {
     return TextStyle(
       fontSize: _largeSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.w400,
+      fontWeight: bold ? FontWeight.bold : FontWeight.w500,
     );
   }
 
@@ -17,7 +17,7 @@ class TextStyleManager {
     return TextStyle(
       fontSize: _mediumSize,
       color: color,
-      fontWeight: bold ? FontWeight.bold : FontWeight.w400,
+      fontWeight: bold ? FontWeight.bold : FontWeight.w500,
     );
   }
 

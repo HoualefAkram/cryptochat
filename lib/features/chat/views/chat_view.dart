@@ -240,6 +240,8 @@ class _ChatViewState extends State<ChatView> {
                               child: TextField(
                                 controller: messageController,
                                 focusNode: focusNode,
+                                minLines: 1,
+                                maxLines: 5,
                                 decoration: InputDecoration(
                                   filled: true,
                                   isDense: true,
@@ -247,10 +249,10 @@ class _ChatViewState extends State<ChatView> {
                                   fillColor: CustomColors.bubleGrey,
                                   hintText: "Message",
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(64),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(64),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
                                 onChanged: context
@@ -258,10 +260,8 @@ class _ChatViewState extends State<ChatView> {
                                     .setTextState,
                               ),
                             ),
-                            // Send/thumb icon (always present in tree)
                             chatState.hasText
                                 ? IconButton(
-                                    iconSize: 30,
                                     onPressed: () async {
                                       if (messageController.text
                                           .trim()
@@ -282,7 +282,6 @@ class _ChatViewState extends State<ChatView> {
                                     ),
                                   )
                                 : IconButton(
-                                    iconSize: 30,
                                     onPressed: () {
                                       context.read<ChatCubit>().sendMessage(
                                         owner: authState.user,
@@ -314,7 +313,7 @@ class _ChatViewState extends State<ChatView> {
     return visible
         ? Container(
             margin: EdgeInsets.all(6),
-            child: Icon(icon, color: Theme.of(context).primaryColor, size: 30),
+            child: Icon(icon, color: Theme.of(context).primaryColor),
           )
         : const SizedBox.shrink(); // takes no space
   }

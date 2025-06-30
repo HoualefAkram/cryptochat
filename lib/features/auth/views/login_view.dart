@@ -109,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(height: 12),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
-                height: 50,
+                height: 46,
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(
@@ -132,7 +132,7 @@ class _LoginViewState extends State<LoginView> {
               const Spacer(),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width,
-                height: 50,
+                height: 46,
                 child: OutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(Routes.register);
@@ -143,7 +143,7 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 12),
               Text(
                 "Houalef Akram",
-                style: TextStyleManager.large(
+                style: TextStyleManager.medium(
                   bold: true,
                   color: Colors.grey.withAlpha(90),
                 ),
