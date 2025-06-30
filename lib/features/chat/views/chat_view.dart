@@ -16,13 +16,13 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   late final TextEditingController messageController;
-
   late final ScrollController scrollController;
 
   @override
   void initState() {
     messageController = TextEditingController();
     scrollController = ScrollController();
+    scrollController.addListener(_onScroll);
     super.initState();
   }
 
@@ -36,6 +36,15 @@ class _ChatViewState extends State<ChatView> {
   bool _isAtBottom() =>
       !scrollController.hasClients ||
       scrollController.offset >= scrollController.position.maxScrollExtent - 70;
+
+  bool _isUp() {
+    if (!scrollController.hasClients) return true;
+
+    final distanceFromBottom =
+        scrollController.position.maxScrollExtent - scrollController.offset;
+
+    return distanceFromBottom >= 800;
+  }
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
@@ -52,6 +61,14 @@ class _ChatViewState extends State<ChatView> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         scrollToBottom();
       });
+    }
+  }
+
+  void _onScroll() {
+    if (_isUp()) {
+      context.read<ChatCubit>().setFABVisibility(true);
+    } else {
+      context.read<ChatCubit>().setFABVisibility(false);
     }
   }
 
@@ -116,191 +133,229 @@ class _ChatViewState extends State<ChatView> {
                 ),
               ],
             ),
-            body: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: StreamBuilder(
-                      stream: context.read<ChatCubit>().getMessageStream(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData || snapshot.data == null) {
-                          return const Text("No data");
-                        }
-                        final List<Message> messages = snapshot.data!.toList();
-                        scrollIfAtBottom();
-                        return ListView.builder(
-                          controller: scrollController,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final Message msg = messages[index];
-                            final bool isOwner = msg.owner == authState.user;
-                            return Container(
-                              margin: EdgeInsets.all(2),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: isOwner
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  if (!isOwner)
-                                    CircleAvatar(
-                                      maxRadius: 18,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: NetworkImage(
-                                        "https://www.washingtonpost.com/news/the-intersect/wp-content/uploads/sites/32/2015/01/facebook-person.jpg",
-                                      ),
-                                    ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment: isOwner
-                                        ? CrossAxisAlignment.end
-                                        : CrossAxisAlignment.start,
+            body: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Center(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: StreamBuilder(
+                          stream: context.read<ChatCubit>().getMessageStream(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData || snapshot.data == null) {
+                              return const Text("No data");
+                            }
+                            final List<Message> messages = snapshot.data!
+                                .toList();
+                            scrollIfAtBottom();
+                            return ListView.builder(
+                              controller: scrollController,
+                              itemCount: messages.length,
+                              itemBuilder: (context, index) {
+                                final Message msg = messages[index];
+                                final bool isOwner =
+                                    msg.owner == authState.user;
+                                return Container(
+                                  margin: EdgeInsets.all(2),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: isOwner
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
                                     children: [
                                       if (!isOwner)
-                                        Padding(
-                                          padding: const EdgeInsets.all(2),
-                                          child: Text(
-                                            msg.owner.name,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 12,
-                                            ),
+                                        CircleAvatar(
+                                          maxRadius: 18,
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage: NetworkImage(
+                                            "https://www.washingtonpost.com/news/the-intersect/wp-content/uploads/sites/32/2015/01/facebook-person.jpg",
                                           ),
                                         ),
+                                      SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment: isOwner
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
+                                        children: [
+                                          if (!isOwner)
+                                            Padding(
+                                              padding: const EdgeInsets.all(2),
+                                              child: Text(
+                                                msg.owner.name,
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
 
-                                      Container(
-                                        padding: EdgeInsets.all(8),
-                                        constraints: BoxConstraints(
-                                          maxWidth:
-                                              MediaQuery.sizeOf(context).width *
-                                              0.5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isOwner
-                                              ? Theme.of(context).primaryColor
-                                              : CustomColors.bubleGrey,
-                                          borderRadius: BorderRadius.circular(
-                                            24,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Text(
-                                            msg.message,
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                          Container(
+                                            padding: EdgeInsets.all(8),
+                                            constraints: BoxConstraints(
+                                              maxWidth:
+                                                  MediaQuery.sizeOf(
+                                                    context,
+                                                  ).width *
+                                                  0.5,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: isOwner
+                                                  ? Theme.of(
+                                                      context,
+                                                    ).primaryColor
+                                                  : CustomColors.bubleGrey,
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                2.0,
+                                              ),
+                                              child: Text(
+                                                msg.message,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                  BlocBuilder<ChatCubit, ChatState>(
-                    builder: (context, chatState) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            // Group of icons (always present in tree)
-                            Row(
+                        ),
+                      ),
+                      BlocBuilder<ChatCubit, ChatState>(
+                        builder: (context, chatState) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
                               children: [
-                                _buildIcon(
-                                  !chatState.hasText,
-                                  Icons.add_circle,
-                                  context,
+                                // Group of icons (always present in tree)
+                                Row(
+                                  children: [
+                                    _buildIcon(
+                                      !chatState.hasText,
+                                      Icons.add_circle,
+                                      context,
+                                    ),
+                                    _buildIcon(
+                                      !chatState.hasText,
+                                      Icons.camera_alt_rounded,
+                                      context,
+                                    ),
+                                    _buildIcon(
+                                      !chatState.hasText,
+                                      Icons.image,
+                                      context,
+                                    ),
+                                    _buildIcon(
+                                      !chatState.hasText,
+                                      Icons.mic,
+                                      context,
+                                    ),
+                                  ],
                                 ),
-                                _buildIcon(
-                                  !chatState.hasText,
-                                  Icons.camera_alt_rounded,
-                                  context,
+
+                                Expanded(
+                                  child: TextField(
+                                    controller: messageController,
+                                    minLines: 1,
+                                    maxLines: 5,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.all(8),
+                                      fillColor: CustomColors.bubleGrey,
+                                      hintText: "Message",
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    onChanged: context
+                                        .read<ChatCubit>()
+                                        .setTextState,
+                                  ),
                                 ),
-                                _buildIcon(
-                                  !chatState.hasText,
-                                  Icons.image,
-                                  context,
-                                ),
-                                _buildIcon(
-                                  !chatState.hasText,
-                                  Icons.mic,
-                                  context,
-                                ),
+                                chatState.hasText
+                                    ? IconButton(
+                                        onPressed: () async {
+                                          if (messageController.text
+                                              .trim()
+                                              .isEmpty) {
+                                            return;
+                                          }
+                                          await context
+                                              .read<ChatCubit>()
+                                              .sendMessage(
+                                                owner: authState.user,
+                                                message: messageController.text,
+                                              );
+                                          messageController.clear();
+                                          scrollToBottom();
+                                        },
+                                        icon: Icon(
+                                          Icons.send,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      )
+                                    : IconButton(
+                                        onPressed: () {
+                                          context.read<ChatCubit>().sendMessage(
+                                            owner: authState.user,
+                                            message: "👍",
+                                          );
+                                          scrollToBottom();
+                                        },
+                                        icon: Icon(
+                                          Icons.thumb_up_alt_rounded,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
                               ],
                             ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
 
-                            Expanded(
-                              child: TextField(
-                                controller: messageController,
-                                minLines: 1,
-                                maxLines: 5,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.all(8),
-                                  fillColor: CustomColors.bubleGrey,
-                                  hintText: "Message",
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                onChanged: context
-                                    .read<ChatCubit>()
-                                    .setTextState,
-                              ),
+                BlocBuilder<ChatCubit, ChatState>(
+                  builder: (context, chatState) {
+                    if (chatState.isFABvisible) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 80),
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            scrollToBottom();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: CustomColors.bubleGreyDark,
+                              shape: BoxShape.circle,
                             ),
-                            chatState.hasText
-                                ? IconButton(
-                                    onPressed: () async {
-                                      if (messageController.text
-                                          .trim()
-                                          .isEmpty) {
-                                        return;
-                                      }
-                                      await context
-                                          .read<ChatCubit>()
-                                          .sendMessage(
-                                            owner: authState.user,
-                                            message: messageController.text,
-                                          );
-                                      messageController.clear();
-                                      scrollToBottom();
-                                    },
-                                    icon: Icon(
-                                      Icons.send,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      context.read<ChatCubit>().sendMessage(
-                                        owner: authState.user,
-                                        message: "👍",
-                                      );
-                                      scrollToBottom();
-                                    },
-                                    icon: Icon(
-                                      Icons.thumb_up_alt_rounded,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                          ],
+                            child: Icon(Icons.arrow_downward_rounded, size: 22),
+                          ),
                         ),
                       );
-                    },
-                  ),
-                ],
-              ),
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
+              ],
             ),
           );
         } else {

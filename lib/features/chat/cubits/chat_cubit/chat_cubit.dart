@@ -7,13 +7,20 @@ import 'package:equatable/equatable.dart';
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit() : super(ChatState(hasText: false));
+  ChatCubit() : super(ChatState(hasText: false, isFABvisible: false));
 
   Stream<Iterable<Message>> getMessageStream() =>
       ChatService.getMessageStream();
 
   void setTextState(String text) {
-    emit(ChatState(hasText: text.isNotEmpty));
+    final bool hasText = text.isNotEmpty;
+    if (state.hasText == hasText) return;
+    emit(state.copyWith(hasText: hasText));
+  }
+
+  void setFABVisibility(bool isVisible) {
+    if (state.isFABvisible == isVisible) return;
+    emit(state.copyWith(isFABvisible: isVisible));
   }
 
   Future<void> sendMessage({
@@ -21,6 +28,6 @@ class ChatCubit extends Cubit<ChatState> {
     required AuthUser owner,
   }) async {
     await ChatService.sendMessage(message: message.trim(), owner: owner);
-    emit(ChatState(hasText: false));
+    emit(ChatState(hasText: false, isFABvisible: state.isFABvisible));
   }
 }

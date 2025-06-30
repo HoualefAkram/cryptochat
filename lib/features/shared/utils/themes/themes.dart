@@ -71,4 +71,5 @@ class CustomColors {
   static final Color primaryBlue = Color(0XFF136DFE);
   static final Color activeGreen = Color(0XFF32A73A);
   static final Color bubleGrey = Color(0XFF333333);
+  static final Color bubleGreyDark = Color(0XFF252729);
 }
