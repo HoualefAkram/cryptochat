@@ -11,6 +11,7 @@ class FirebaseDbProvider implements DbProvider {
   @override
   Future<void> sendMessage({required Message message}) async {
     final Map<String, dynamic> data = message.toJson();
+    data.addEntries([MapEntry("timestamp", FieldValue.serverTimestamp())]);
     final DocumentReference<Map<String, dynamic>> docRef = await _db
         .collection(collectionPath)
         .add(data);
@@ -30,7 +31,7 @@ class FirebaseDbProvider implements DbProvider {
     dev.log("Starting stream");
     final stream = _db
         .collection(collectionPath)
-        .orderBy('dateTime', descending: false)
+        .orderBy('timestamp', descending: false)
         .snapshots()
         .map((QuerySnapshot<Map<String, dynamic>> collection) {
           return collection.docs.map(Message.fromDoc);

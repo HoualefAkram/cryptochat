@@ -10,11 +10,7 @@ class ChatService {
     required AuthUser owner,
   }) async {
     _db.sendMessage(
-      message: Message(
-        owner: owner,
-        message: message,
-        dateTime: DateTime.now(),
-      ),
+      message: Message(owner: owner, message: message),
     );
   }
 
