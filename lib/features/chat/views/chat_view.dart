@@ -16,14 +16,13 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   late final TextEditingController messageController;
-  late final FocusNode focusNode;
+
   late final ScrollController scrollController;
 
   @override
   void initState() {
     messageController = TextEditingController();
     scrollController = ScrollController();
-    focusNode = FocusNode();
     super.initState();
   }
 
@@ -31,15 +30,12 @@ class _ChatViewState extends State<ChatView> {
   void dispose() {
     messageController.dispose();
     scrollController.dispose();
-    focusNode.dispose();
     super.dispose();
   }
 
-  bool _isAtBottom() {
-    return !scrollController.hasClients ||
-        scrollController.offset >=
-            scrollController.position.maxScrollExtent - 70;
-  }
+  bool _isAtBottom() =>
+      !scrollController.hasClients ||
+      scrollController.offset >= scrollController.position.maxScrollExtent - 70;
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
@@ -239,11 +235,10 @@ class _ChatViewState extends State<ChatView> {
                                 ),
                               ],
                             ),
-                            // TextField
+
                             Expanded(
                               child: TextField(
                                 controller: messageController,
-                                focusNode: focusNode,
                                 minLines: 1,
                                 maxLines: 5,
                                 decoration: InputDecoration(
