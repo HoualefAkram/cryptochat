@@ -334,7 +334,7 @@ class _ChatViewState extends State<ChatView> {
                   builder: (context, chatState) {
                     if (chatState.isFABvisible) {
                       return Container(
-                        margin: EdgeInsets.only(bottom: 80),
+                        margin: EdgeInsets.only(bottom: 100),
                         child: InkWell(
                           customBorder: const CircleBorder(),
                           onTap: () {
