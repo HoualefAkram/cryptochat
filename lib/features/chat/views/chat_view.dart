@@ -42,15 +42,19 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void scrollIfAtBottom() {
     if (_isAtBottom()) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
+        scrollToBottom();
       });
     }
   }
@@ -127,7 +131,7 @@ class _ChatViewState extends State<ChatView> {
                           return const Text("No data");
                         }
                         final List<Message> messages = snapshot.data!.toList();
-                        scrollToBottom();
+                        scrollIfAtBottom();
                         return ListView.builder(
                           controller: scrollController,
                           itemCount: messages.length,
@@ -275,6 +279,7 @@ class _ChatViewState extends State<ChatView> {
                                             message: messageController.text,
                                           );
                                       messageController.clear();
+                                      scrollToBottom();
                                     },
                                     icon: Icon(
                                       Icons.send,
@@ -287,6 +292,7 @@ class _ChatViewState extends State<ChatView> {
                                         owner: authState.user,
                                         message: "👍",
                                       );
+                                      scrollToBottom();
                                     },
                                     icon: Icon(
                                       Icons.thumb_up_alt_rounded,
