@@ -20,7 +20,7 @@ class ChatCubit extends Cubit<ChatState> {
     required String message,
     required AuthUser owner,
   }) async {
-    await ChatService.sendMessage(message: message, owner: owner);
+    await ChatService.sendMessage(message: message.trim(), owner: owner);
     emit(ChatState(hasText: false));
   }
 }
