@@ -88,6 +88,8 @@ flutter:
         weight: 500
       - asset: fonts/Roboto-SemiBold.ttf
         weight: 600
+      - asset: fonts/Roboto-Bold.ttf
+        weight: 700
       - asset: fonts/Roboto-Italic.ttf
         style: italic
   # For details regarding fonts from package dependencies,

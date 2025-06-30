@@ -11,7 +11,7 @@ class TextStyleManager {
     return _defaultStyle.copyWith(
       fontSize: _smallSize,
       color: color,
-      fontWeight: bold ? FontWeight.w500 : FontWeight.w400,
+      fontWeight: bold ? FontWeight.w700 : FontWeight.w600,
     );
   }
 
@@ -19,7 +19,7 @@ class TextStyleManager {
     return _defaultStyle.copyWith(
       fontSize: _mediumSize,
       color: color,
-      fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
+      fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
     );
   }
 
@@ -27,7 +27,7 @@ class TextStyleManager {
     return _defaultStyle.copyWith(
       fontSize: _largeSize,
       color: color,
-      fontWeight: bold ? FontWeight.w600 : FontWeight.w400,
+      fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
     );
   }
 
