@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:cryptochat/features/auth/models/auth_user.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
 import 'package:cryptochat/features/chat/services/chat_service.dart';
 import 'package:equatable/equatable.dart';
@@ -7,7 +6,15 @@ import 'package:equatable/equatable.dart';
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit() : super(ChatState(hasText: false, isFABvisible: false));
+  ChatCubit()
+    : super(
+        ChatState(
+          hasText: false,
+          isFABvisible: false,
+          readSeed: null,
+          writeSeed: null,
+        ),
+      );
 
   Stream<Iterable<Message>> getMessageStream() =>
       ChatService.getMessageStream();
@@ -23,11 +30,14 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(isFABvisible: isVisible));
   }
 
-  Future<void> sendMessage({
-    required String message,
-    required AuthUser owner,
-  }) async {
-    await ChatService.sendMessage(message: message.trim(), owner: owner);
-    emit(ChatState(hasText: false, isFABvisible: state.isFABvisible));
+  Future<void> sendMessage({required Message message}) async {
+    await ChatService.sendMessage(
+      message: message.encode(state.writeSeed).text,
+      owner: message.owner,
+    );
+    emit(state.copyWith(hasText: false));
   }
+
+  void setReadSeed(int seed) => emit(state.copyWith(readSeed: seed));
+  void setWriteSeed(int seed) => emit(state.copyWith(writeSeed: seed));
 }

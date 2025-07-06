@@ -139,86 +139,102 @@ class _ChatViewState extends State<ChatView> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: StreamBuilder(
-                          stream: context.read<ChatCubit>().getMessageStream(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData || snapshot.data == null) {
-                              return const Text("No data");
-                            }
-                            final List<Message> messages = snapshot.data!
-                                .toList();
-                            scrollIfAtBottom();
-                            return ListView.builder(
-                              controller: scrollController,
-                              itemCount: messages.length,
-                              itemBuilder: (context, index) {
-                                final Message msg = messages[index];
-                                final bool isOwner =
-                                    msg.owner == authState.user;
-                                return Container(
-                                  margin: EdgeInsets.all(2),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: isOwner
-                                        ? MainAxisAlignment.end
-                                        : MainAxisAlignment.start,
-                                    children: [
-                                      if (!isOwner)
-                                        CircleAvatar(
-                                          maxRadius: 14,
-                                          backgroundColor: Colors.grey,
-                                          backgroundImage: NetworkImage(
-                                            CImage.nProfilePic,
-                                          ),
-                                        ),
-                                      SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment: isOwner
-                                            ? CrossAxisAlignment.end
-                                            : CrossAxisAlignment.start,
+                        child: BlocBuilder<ChatCubit, ChatState>(
+                          buildWhen: (previous, current) =>
+                              previous.readSeed != current.readSeed,
+                          builder: (context, chatState) {
+                            return StreamBuilder(
+                              stream: context
+                                  .read<ChatCubit>()
+                                  .getMessageStream(),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData ||
+                                    snapshot.data == null) {
+                                  return const Text("No data");
+                                }
+                                final List<Message> messages = snapshot.data!
+                                    .toList();
+                                scrollIfAtBottom();
+                                return ListView.builder(
+                                  controller: scrollController,
+                                  itemCount: messages.length,
+                                  itemBuilder: (context, index) {
+                                    final Message msg = messages[index].decode(
+                                      chatState.readSeed,
+                                    );
+
+                                    final bool isOwner =
+                                        msg.owner == authState.user;
+                                    return Container(
+                                      margin: EdgeInsets.all(2),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment: isOwner
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
                                         children: [
                                           if (!isOwner)
-                                            Padding(
-                                              padding: const EdgeInsets.all(2),
-                                              child: Text(
-                                                msg.owner.name,
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
-                                                ),
+                                            CircleAvatar(
+                                              maxRadius: 14,
+                                              backgroundColor: Colors.grey,
+                                              backgroundImage: NetworkImage(
+                                                CImage.nProfilePic,
                                               ),
                                             ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment: isOwner
+                                                ? CrossAxisAlignment.end
+                                                : CrossAxisAlignment.start,
+                                            children: [
+                                              if (!isOwner)
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    2,
+                                                  ),
+                                                  child: Text(
+                                                    msg.owner.name,
+                                                    style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
 
-                                          Container(
-                                            padding: EdgeInsets.all(8),
-                                            constraints: BoxConstraints(
-                                              maxWidth:
-                                                  MediaQuery.sizeOf(
-                                                    context,
-                                                  ).width *
-                                                  0.5,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: isOwner
-                                                  ? Theme.of(
-                                                      context,
-                                                    ).primaryColor
-                                                  : CustomColors.bubleGrey,
-                                              borderRadius:
-                                                  BorderRadius.circular(24),
-                                            ),
-                                            child: Text(
-                                              msg.message,
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyLarge?.copyWith(),
-                                            ),
+                                              Container(
+                                                padding: EdgeInsets.all(8),
+                                                constraints: BoxConstraints(
+                                                  maxWidth:
+                                                      MediaQuery.sizeOf(
+                                                        context,
+                                                      ).width *
+                                                      0.5,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: isOwner
+                                                      ? Theme.of(
+                                                          context,
+                                                        ).primaryColor
+                                                      : CustomColors.bubleGrey,
+                                                  borderRadius:
+                                                      BorderRadius.circular(24),
+                                                ),
+                                                child: Text(
+                                                  msg.text,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.copyWith(),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 );
                               },
                             );
@@ -295,8 +311,10 @@ class _ChatViewState extends State<ChatView> {
                                           await context
                                               .read<ChatCubit>()
                                               .sendMessage(
-                                                owner: authState.user,
-                                                message: messageController.text,
+                                                message: Message(
+                                                  owner: authState.user,
+                                                  text: messageController.text,
+                                                ),
                                               );
                                           messageController.clear();
                                           scrollToBottom();
@@ -309,8 +327,10 @@ class _ChatViewState extends State<ChatView> {
                                     : IconButton(
                                         onPressed: () {
                                           context.read<ChatCubit>().sendMessage(
-                                            owner: authState.user,
-                                            message: "👍",
+                                            message: Message(
+                                              owner: authState.user,
+                                              text: "👍",
+                                            ),
                                           );
                                           scrollToBottom();
                                         },
