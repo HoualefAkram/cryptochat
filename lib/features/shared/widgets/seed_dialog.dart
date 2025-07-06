@@ -56,8 +56,8 @@ class _SeedDialogState extends State<_SeedDialog> {
             controller: readSeedController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              hintText: "Read seed",
-              label: const Text("Read seed"),
+              hintText: "Read code",
+              label: const Text("Read code"),
             ),
           ),
           const SizedBox(height: 12),
@@ -65,8 +65,8 @@ class _SeedDialogState extends State<_SeedDialog> {
             controller: writeSeedController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              hintText: "Write seed",
-              label: const Text("Write seed"),
+              hintText: "Write code",
+              label: const Text("Write code"),
             ),
           ),
 
