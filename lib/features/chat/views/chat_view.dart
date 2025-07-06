@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
@@ -17,11 +19,15 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   late final TextEditingController messageController;
+  late final TextEditingController readSeedController;
+  late final TextEditingController writeSeedController;
   late final ScrollController scrollController;
 
   @override
   void initState() {
     messageController = TextEditingController();
+    readSeedController = TextEditingController();
+    writeSeedController = TextEditingController();
     scrollController = ScrollController();
     scrollController.addListener(_onScroll);
     super.initState();
@@ -30,6 +36,8 @@ class _ChatViewState extends State<ChatView> {
   @override
   void dispose() {
     messageController.dispose();
+    readSeedController.dispose();
+    writeSeedController.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -241,6 +249,7 @@ class _ChatViewState extends State<ChatView> {
                           },
                         ),
                       ),
+
                       BlocBuilder<ChatCubit, ChatState>(
                         builder: (context, chatState) {
                           return Padding(

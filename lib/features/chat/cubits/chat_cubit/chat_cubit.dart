@@ -38,6 +38,20 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(hasText: false));
   }
 
-  void setReadSeed(int seed) => emit(state.copyWith(readSeed: seed));
-  void setWriteSeed(int seed) => emit(state.copyWith(writeSeed: seed));
+  void setReadSeed(int? seed) => emit(
+    ChatState(
+      hasText: state.hasText,
+      isFABvisible: state.isFABvisible,
+      readSeed: seed,
+      writeSeed: state.writeSeed,
+    ),
+  );
+  void setWriteSeed(int? seed) => emit(
+    ChatState(
+      hasText: state.hasText,
+      isFABvisible: state.isFABvisible,
+      readSeed: state.readSeed,
+      writeSeed: seed,
+    ),
+  );
 }
