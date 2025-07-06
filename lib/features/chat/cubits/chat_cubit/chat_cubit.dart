@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
+import 'package:cryptochat/features/chat/models/seed.dart';
 import 'package:cryptochat/features/chat/services/chat_service.dart';
 import 'package:equatable/equatable.dart';
 
@@ -38,20 +39,12 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(hasText: false));
   }
 
-  void setReadSeed(int? seed) => emit(
+  void setSeed(Seed seed) => emit(
     ChatState(
       hasText: state.hasText,
       isFABvisible: state.isFABvisible,
-      readSeed: seed,
-      writeSeed: state.writeSeed,
-    ),
-  );
-  void setWriteSeed(int? seed) => emit(
-    ChatState(
-      hasText: state.hasText,
-      isFABvisible: state.isFABvisible,
-      readSeed: state.readSeed,
-      writeSeed: seed,
+      readSeed: seed.read,
+      writeSeed: seed.write,
     ),
   );
 }

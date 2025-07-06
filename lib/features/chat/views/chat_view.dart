@@ -2,9 +2,10 @@ import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
+import 'package:cryptochat/features/chat/models/seed.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
-
 import 'package:cryptochat/features/shared/widgets/app_bar.dart';
+import 'package:cryptochat/features/shared/widgets/seed_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -261,7 +262,17 @@ class _ChatViewState extends State<ChatView> {
                                       context: context,
                                       visible: !chatState.hasText,
                                       icon: Icons.add_circle,
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        final Seed? seed = await showSeedDialog(
+                                          context: context,
+                                          initialRead: chatState.readSeed,
+                                          initialWrite: chatState.writeSeed,
+                                        );
+                                        if (seed == null || !context.mounted) {
+                                          return;
+                                        }
+                                        context.read<ChatCubit>().setSeed(seed);
+                                      },
                                     ),
                                     _buildIcon(
                                       context: context,
