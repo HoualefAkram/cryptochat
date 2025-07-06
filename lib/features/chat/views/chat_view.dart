@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
@@ -22,6 +20,7 @@ class _ChatViewState extends State<ChatView> {
   late final TextEditingController readSeedController;
   late final TextEditingController writeSeedController;
   late final ScrollController scrollController;
+  late final Stream<Iterable<Message>> _messageStream;
 
   @override
   void initState() {
@@ -29,6 +28,7 @@ class _ChatViewState extends State<ChatView> {
     readSeedController = TextEditingController();
     writeSeedController = TextEditingController();
     scrollController = ScrollController();
+    _messageStream = context.read<ChatCubit>().getMessageStream();
     scrollController.addListener(_onScroll);
     super.initState();
   }
@@ -152,9 +152,7 @@ class _ChatViewState extends State<ChatView> {
                               previous.readSeed != current.readSeed,
                           builder: (context, chatState) {
                             return StreamBuilder(
-                              stream: context
-                                  .read<ChatCubit>()
-                                  .getMessageStream(),
+                              stream: _messageStream,
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData ||
                                     snapshot.data == null) {
