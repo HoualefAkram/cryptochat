@@ -1,4 +1,5 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
+import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
 import 'package:cryptochat/features/chat/models/message.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
@@ -95,9 +96,7 @@ class _ChatViewState extends State<ChatView> {
                       CircleAvatar(
                         backgroundColor: Colors.grey,
                         minRadius: 22,
-                        backgroundImage: NetworkImage(
-                          "https://upload.wikimedia.org/wikipedia/fr/3/3f/USTO-MB_%28logo%29.jpg",
-                        ),
+                        backgroundImage: NetworkImage(CImage.nUstoPic),
                       ),
                       Container(
                         height: 16,
@@ -170,7 +169,7 @@ class _ChatViewState extends State<ChatView> {
                                           maxRadius: 14,
                                           backgroundColor: Colors.grey,
                                           backgroundImage: NetworkImage(
-                                            "https://www.washingtonpost.com/news/the-intersect/wp-content/uploads/sites/32/2015/01/facebook-person.jpg",
+                                            CImage.nProfilePic,
                                           ),
                                         ),
                                       SizedBox(width: 10),
@@ -236,24 +235,28 @@ class _ChatViewState extends State<ChatView> {
                                 Row(
                                   children: [
                                     _buildIcon(
-                                      !chatState.hasText,
-                                      Icons.add_circle,
-                                      context,
+                                      context: context,
+                                      visible: !chatState.hasText,
+                                      icon: Icons.add_circle,
+                                      onPressed: () {},
                                     ),
                                     _buildIcon(
-                                      !chatState.hasText,
-                                      Icons.camera_alt_rounded,
-                                      context,
+                                      context: context,
+                                      visible: !chatState.hasText,
+                                      icon: Icons.camera_alt_rounded,
+                                      onPressed: () {},
                                     ),
                                     _buildIcon(
-                                      !chatState.hasText,
-                                      Icons.image,
-                                      context,
+                                      context: context,
+                                      visible: !chatState.hasText,
+                                      icon: Icons.image,
+                                      onPressed: () {},
                                     ),
                                     _buildIcon(
-                                      !chatState.hasText,
-                                      Icons.mic,
-                                      context,
+                                      context: context,
+                                      visible: !chatState.hasText,
+                                      icon: Icons.mic,
+                                      onPressed: () {},
                                     ),
                                   ],
                                 ),
@@ -360,12 +363,22 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 
-  Widget _buildIcon(bool visible, IconData icon, BuildContext context) {
-    return visible
-        ? Container(
-            margin: EdgeInsets.all(6),
-            child: Icon(icon, color: Theme.of(context).primaryColor),
-          )
-        : const SizedBox.shrink(); // takes no space
+  Widget _buildIcon({
+    required BuildContext context,
+    required bool visible,
+    required IconData icon,
+    required void Function() onPressed,
+  }) {
+    if (visible) {
+      return InkWell(
+        onTap: onPressed,
+        child: Container(
+          margin: EdgeInsets.all(6),
+          child: Icon(icon, color: Theme.of(context).primaryColor),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    } // takes no space
   }
 }
