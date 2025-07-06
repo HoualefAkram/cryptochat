@@ -5,19 +5,16 @@ import 'package:flutter/material.dart';
 
 Future<Seed?> showSeedDialog({
   required BuildContext context,
-  int? initialRead,
-  int? initialWrite,
+  required Seed initialSeed,
 }) async => showDialog<Seed?>(
   context: context,
-  builder: (context) =>
-      _SeedDialog(initialRead: initialRead, initialWrite: initialWrite),
+  builder: (context) => _SeedDialog(initialSeed: initialSeed),
 );
 
 class _SeedDialog extends StatefulWidget {
-  final int? initialRead;
-  final int? initialWrite;
+  final Seed initialSeed;
 
-  const _SeedDialog({required this.initialRead, required this.initialWrite});
+  const _SeedDialog({required this.initialSeed});
 
   @override
   State<_SeedDialog> createState() => _SeedDialogState();
@@ -30,9 +27,9 @@ class _SeedDialogState extends State<_SeedDialog> {
   @override
   void initState() {
     readSeedController = TextEditingController()
-      ..text = (widget.initialRead ?? "").toString();
+      ..text = (widget.initialSeed.read ?? "").toString();
     writeSeedController = TextEditingController()
-      ..text = (widget.initialWrite ?? "").toString();
+      ..text = (widget.initialSeed.write ?? "").toString();
 
     super.initState();
   }

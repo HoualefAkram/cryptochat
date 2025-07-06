@@ -12,8 +12,7 @@ class ChatCubit extends Cubit<ChatState> {
         ChatState(
           hasText: false,
           isFABvisible: false,
-          readSeed: null,
-          writeSeed: null,
+          seed: Seed(read: null, write: null),
         ),
       );
 
@@ -33,18 +32,11 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> sendMessage({required Message message}) async {
     await ChatService.sendMessage(
-      message: message.encode(state.writeSeed).text,
+      message: message.encode(state.seed.write).text,
       owner: message.owner,
     );
     emit(state.copyWith(hasText: false));
   }
 
-  void setSeed(Seed seed) => emit(
-    ChatState(
-      hasText: state.hasText,
-      isFABvisible: state.isFABvisible,
-      readSeed: seed.read,
-      writeSeed: seed.write,
-    ),
-  );
+  void setSeed(Seed seed) => emit(state.copyWith(seed: seed));
 }

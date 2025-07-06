@@ -150,7 +150,7 @@ class _ChatViewState extends State<ChatView> {
                       Expanded(
                         child: BlocBuilder<ChatCubit, ChatState>(
                           buildWhen: (previous, current) =>
-                              previous.readSeed != current.readSeed,
+                              previous.seed.read != current.seed.read,
                           builder: (context, chatState) {
                             return StreamBuilder(
                               stream: _messageStream,
@@ -167,7 +167,7 @@ class _ChatViewState extends State<ChatView> {
                                   itemCount: messages.length,
                                   itemBuilder: (context, index) {
                                     final Message msg = messages[index].decode(
-                                      chatState.readSeed,
+                                      chatState.seed.read,
                                     );
 
                                     final bool isOwner =
@@ -265,8 +265,7 @@ class _ChatViewState extends State<ChatView> {
                                       onPressed: () async {
                                         final Seed? seed = await showSeedDialog(
                                           context: context,
-                                          initialRead: chatState.readSeed,
-                                          initialWrite: chatState.writeSeed,
+                                          initialSeed: chatState.seed,
                                         );
                                         if (seed == null || !context.mounted) {
                                           return;
