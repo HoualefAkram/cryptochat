@@ -3,7 +3,7 @@ import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/auth/views/register_view.dart';
 import 'package:cryptochat/features/auth/views/reset_password_view.dart';
 import 'package:cryptochat/features/offline_chat/views/offline_chat_view.dart';
-import 'package:cryptochat/features/online_chat/views/online_chat_view.dart';
+import 'package:cryptochat/features/online_chat/views/online_main.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/features/shared/views/mode_select_view.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +43,7 @@ class ScreenRouter {
       case Routes.onlineChat:
         return MaterialPageRoute(
           settings: RouteSettings(name: Routes.onlineChat),
-          builder: (context) => OnlineChatView(),
+          builder: (context) => OnlineChatMain(),
         );
       case Routes.offlineChat:
         return MaterialPageRoute(
