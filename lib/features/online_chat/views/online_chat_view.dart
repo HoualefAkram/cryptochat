@@ -9,14 +9,14 @@ import 'package:cryptochat/features/shared/widgets/seed_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatView extends StatefulWidget {
-  const ChatView({super.key});
+class OnlineChatView extends StatefulWidget {
+  const OnlineChatView({super.key});
 
   @override
-  State<ChatView> createState() => _ChatViewState();
+  State<OnlineChatView> createState() => _OnlineChatViewState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _OnlineChatViewState extends State<OnlineChatView> {
   late final TextEditingController messageController;
   late final TextEditingController readSeedController;
   late final TextEditingController writeSeedController;

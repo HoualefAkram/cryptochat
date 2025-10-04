@@ -2,9 +2,10 @@ import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_c
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/auth/views/register_view.dart';
 import 'package:cryptochat/features/auth/views/reset_password_view.dart';
-import 'package:cryptochat/features/online_chat/views/chat_view.dart';
+import 'package:cryptochat/features/offline_chat/views/offline_chat_view.dart';
+import 'package:cryptochat/features/online_chat/views/online_chat_view.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
-import 'package:cryptochat/main.dart';
+import 'package:cryptochat/features/shared/views/mode_select_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +15,7 @@ class ScreenRouter {
       case Routes.home:
         return MaterialPageRoute(
           settings: RouteSettings(name: Routes.home),
-          builder: (context) => Main(),
+          builder: (context) => ModeSelectView(),
         );
 
       case Routes.login:
@@ -39,10 +40,15 @@ class ScreenRouter {
           settings: RouteSettings(name: Routes.resetPassword),
           builder: (context) => ResetPasswordView(),
         );
-      case Routes.chat:
+      case Routes.onlineChat:
         return MaterialPageRoute(
-          settings: RouteSettings(name: Routes.chat),
-          builder: (context) => ChatView(),
+          settings: RouteSettings(name: Routes.onlineChat),
+          builder: (context) => OnlineChatView(),
+        );
+      case Routes.offlineChat:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: Routes.offlineChat),
+          builder: (context) => OfflineChatView(),
         );
       default:
         return null;
