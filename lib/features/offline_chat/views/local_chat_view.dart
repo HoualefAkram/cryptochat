@@ -1,8 +1,8 @@
 import 'dart:developer' show log;
 import 'dart:typed_data';
 
-import 'package:cryptochat/features/chat/services/audio_stream_service.dart';
-import 'package:cryptochat/features/chat/services/local_chat_service.dart';
+import 'package:cryptochat/features/online_chat/services/audio_stream_service.dart';
+import 'package:cryptochat/features/online_chat/services/local_chat_service.dart';
 import 'package:flutter/material.dart';
 
 class LocalChatView extends StatefulWidget {

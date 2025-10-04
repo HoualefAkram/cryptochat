@@ -1,4 +1,4 @@
-import "package:cryptochat/features/chat/models/message.dart";
+import "package:cryptochat/features/online_chat/models/online_message.dart";
 import 'package:cryptochat/features/shared/services/db/db_provider.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 
@@ -9,7 +9,7 @@ class FirebaseDbProvider implements DbProvider {
   static const String collectionPath = "chats";
 
   @override
-  Future<void> sendMessage({required Message message}) async {
+  Future<void> sendMessage({required OnlineMessage message}) async {
     final Map<String, dynamic> data = message.toJson();
     data.addEntries([MapEntry("timestamp", FieldValue.serverTimestamp())]);
     final DocumentReference<Map<String, dynamic>> docRef = await _db
@@ -19,22 +19,22 @@ class FirebaseDbProvider implements DbProvider {
   }
 
   @override
-  Future<List<Message>> getAllMesages() async {
+  Future<List<OnlineMessage>> getAllMesages() async {
     final QuerySnapshot<Map<String, dynamic>> collection = await _db
         .collection(collectionPath)
         .get();
-    return collection.docs.map(Message.fromDoc).toList();
+    return collection.docs.map(OnlineMessage.fromDoc).toList();
   }
 
   @override
-  Stream<Iterable<Message>> getMessageStream() {
+  Stream<Iterable<OnlineMessage>> getMessageStream() {
     dev.log("Starting stream");
     final stream = _db
         .collection(collectionPath)
         .orderBy('timestamp', descending: false)
         .snapshots()
         .map((QuerySnapshot<Map<String, dynamic>> collection) {
-          return collection.docs.map(Message.fromDoc);
+          return collection.docs.map(OnlineMessage.fromDoc);
         });
     return stream;
   }

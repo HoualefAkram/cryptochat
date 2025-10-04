@@ -1,18 +1,18 @@
-import 'package:cryptochat/features/chat/models/seed.dart';
+import 'package:cryptochat/features/online_chat/models/crypto_seed.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
 
 import 'package:flutter/material.dart';
 
-Future<Seed?> showSeedDialog({
+Future<CryptoSeed?> showSeedDialog({
   required BuildContext context,
-  required Seed initialSeed,
-}) async => showDialog<Seed?>(
+  required CryptoSeed initialSeed,
+}) async => showDialog<CryptoSeed?>(
   context: context,
   builder: (context) => _SeedDialog(initialSeed: initialSeed),
 );
 
 class _SeedDialog extends StatefulWidget {
-  final Seed initialSeed;
+  final CryptoSeed initialSeed;
 
   const _SeedDialog({required this.initialSeed});
 
@@ -83,7 +83,7 @@ class _SeedDialogState extends State<_SeedDialog> {
                   final int? writeSeed = int.tryParse(writeSeedController.text);
                   Navigator.of(
                     context,
-                  ).pop(Seed(read: readSeed, write: writeSeed));
+                  ).pop(CryptoSeed(read: readSeed, write: writeSeed));
                 },
                 child: Text(
                   "Confirm",

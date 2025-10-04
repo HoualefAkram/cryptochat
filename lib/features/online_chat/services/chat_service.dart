@@ -2,7 +2,7 @@ import 'dart:developer' show log;
 import 'dart:io';
 
 import 'package:cryptochat/features/auth/models/auth_user.dart';
-import 'package:cryptochat/features/chat/models/message.dart';
+import 'package:cryptochat/features/online_chat/models/online_message.dart';
 import 'package:cryptochat/features/shared/services/db/db_service.dart';
 
 class ChatService {
@@ -13,13 +13,14 @@ class ChatService {
     required AuthUser owner,
   }) async {
     _db.sendMessage(
-      message: Message(owner: owner, text: message),
+      message: OnlineMessage(owner: owner, text: message),
     );
   }
 
-  static Future<List<Message>> getAllMesages() => _db.getAllMesages();
+  static Future<List<OnlineMessage>> getAllMesages() => _db.getAllMesages();
 
-  static Stream<Iterable<Message>> getMessageStream() => _db.getMessageStream();
+  static Stream<Iterable<OnlineMessage>> getMessageStream() =>
+      _db.getMessageStream();
 
   Future<void> udpBroadcast() async {
     final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);

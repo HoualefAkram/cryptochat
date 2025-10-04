@@ -1,18 +1,22 @@
-part of 'chat_cubit.dart';
+part of 'online_chat_cubit.dart';
 
-class ChatState extends Equatable {
+class OnlineChatState extends Equatable {
   final bool hasText;
-  final Seed seed;
+  final CryptoSeed seed;
   final bool isFABvisible;
 
-  const ChatState({
+  const OnlineChatState({
     required this.hasText,
     required this.isFABvisible,
     required this.seed,
   });
 
-  ChatState copyWith({bool? hasText, bool? isFABvisible, Seed? seed}) {
-    return ChatState(
+  OnlineChatState copyWith({
+    bool? hasText,
+    bool? isFABvisible,
+    CryptoSeed? seed,
+  }) {
+    return OnlineChatState(
       hasText: hasText ?? this.hasText,
       isFABvisible: isFABvisible ?? this.isFABvisible,
       seed: seed ?? this.seed,

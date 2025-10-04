@@ -1,22 +1,22 @@
 import 'package:bloc/bloc.dart';
-import 'package:cryptochat/features/chat/models/message.dart';
-import 'package:cryptochat/features/chat/models/seed.dart';
-import 'package:cryptochat/features/chat/services/chat_service.dart';
+import 'package:cryptochat/features/online_chat/models/online_message.dart';
+import 'package:cryptochat/features/online_chat/models/crypto_seed.dart';
+import 'package:cryptochat/features/online_chat/services/chat_service.dart';
 import 'package:equatable/equatable.dart';
 
-part 'chat_state.dart';
+part 'online_chat_state.dart';
 
-class ChatCubit extends Cubit<ChatState> {
-  ChatCubit()
+class OnlineChatCubit extends Cubit<OnlineChatState> {
+  OnlineChatCubit()
     : super(
-        ChatState(
+        OnlineChatState(
           hasText: false,
           isFABvisible: false,
-          seed: Seed(read: null, write: null),
+          seed: CryptoSeed(read: null, write: null),
         ),
       );
 
-  Stream<Iterable<Message>> getMessageStream() =>
+  Stream<Iterable<OnlineMessage>> getMessageStream() =>
       ChatService.getMessageStream();
 
   void setTextState(String text) {
@@ -30,7 +30,7 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(isFABvisible: isVisible));
   }
 
-  Future<void> sendMessage({required Message message}) async {
+  Future<void> sendMessage({required OnlineMessage message}) async {
     await ChatService.sendMessage(
       message: message.encode(state.seed.write).text,
       owner: message.owner,
@@ -38,5 +38,5 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(hasText: false));
   }
 
-  void setSeed(Seed seed) => emit(state.copyWith(seed: seed));
+  void setSeed(CryptoSeed seed) => emit(state.copyWith(seed: seed));
 }

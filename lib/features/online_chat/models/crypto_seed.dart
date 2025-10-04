@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-class Seed extends Equatable {
+class CryptoSeed extends Equatable {
   final int? write;
   final int? read;
 
-  const Seed({required this.read, required this.write});
+  const CryptoSeed({required this.read, required this.write});
 
   @override
   String toString() => "Seed(read: $read, write: $write)";

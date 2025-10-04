@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cryptochat/features/chat/services/audio_stream_service.dart';
+import 'package:cryptochat/features/online_chat/services/audio_stream_service.dart';
 
 class LocalChatService {
   Socket? clientSocket;

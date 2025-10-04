@@ -2,7 +2,7 @@ import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_c
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/auth/views/register_view.dart';
 import 'package:cryptochat/features/auth/views/reset_password_view.dart';
-import 'package:cryptochat/features/chat/views/chat_view.dart';
+import 'package:cryptochat/features/online_chat/views/chat_view.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
 import 'package:cryptochat/main.dart';
 import 'package:flutter/material.dart';

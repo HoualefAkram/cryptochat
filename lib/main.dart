@@ -3,9 +3,9 @@ import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_cubit.dart';
 import 'package:cryptochat/features/auth/services/auth_service.dart';
 import 'package:cryptochat/features/auth/views/login_view.dart';
-import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
-import 'package:cryptochat/features/chat/views/chat_view.dart';
-import 'package:cryptochat/features/chat/views/local_chat_view.dart';
+import 'package:cryptochat/features/online_chat/cubits/chat_cubit/online_chat_cubit.dart';
+import 'package:cryptochat/features/online_chat/views/chat_view.dart';
+import 'package:cryptochat/features/offline_chat/views/local_chat_view.dart';
 import 'package:cryptochat/features/shared/cubits/theme_cubit/theme_cubit.dart';
 
 import 'package:cryptochat/features/shared/utils/routing/router.dart';
@@ -20,7 +20,7 @@ void main() async {
       providers: [
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => AuthBloc(AuthService.firebase())),
-        BlocProvider(create: (context) => ChatCubit()),
+        BlocProvider(create: (context) => OnlineChatCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {

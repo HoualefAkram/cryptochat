@@ -1,8 +1,8 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 import 'package:cryptochat/features/auth/constants/images.dart';
-import 'package:cryptochat/features/chat/cubits/chat_cubit/chat_cubit.dart';
-import 'package:cryptochat/features/chat/models/message.dart';
-import 'package:cryptochat/features/chat/models/seed.dart';
+import 'package:cryptochat/features/online_chat/cubits/chat_cubit/online_chat_cubit.dart';
+import 'package:cryptochat/features/online_chat/models/online_message.dart';
+import 'package:cryptochat/features/online_chat/models/crypto_seed.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
 import 'package:cryptochat/features/shared/widgets/app_bar.dart';
 import 'package:cryptochat/features/shared/widgets/seed_dialog.dart';
@@ -21,7 +21,7 @@ class _ChatViewState extends State<ChatView> {
   late final TextEditingController readSeedController;
   late final TextEditingController writeSeedController;
   late final ScrollController scrollController;
-  late final Stream<Iterable<Message>> _messageStream;
+  late final Stream<Iterable<OnlineMessage>> _messageStream;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _ChatViewState extends State<ChatView> {
     readSeedController = TextEditingController();
     writeSeedController = TextEditingController();
     scrollController = ScrollController();
-    _messageStream = context.read<ChatCubit>().getMessageStream();
+    _messageStream = context.read<OnlineChatCubit>().getMessageStream();
     scrollController.addListener(_onScroll);
     super.initState();
   }
@@ -76,9 +76,9 @@ class _ChatViewState extends State<ChatView> {
 
   void _onScroll() {
     if (_isUp()) {
-      context.read<ChatCubit>().setFABVisibility(true);
+      context.read<OnlineChatCubit>().setFABVisibility(true);
     } else {
-      context.read<ChatCubit>().setFABVisibility(false);
+      context.read<OnlineChatCubit>().setFABVisibility(false);
     }
   }
 
@@ -148,7 +148,7 @@ class _ChatViewState extends State<ChatView> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: BlocBuilder<ChatCubit, ChatState>(
+                        child: BlocBuilder<OnlineChatCubit, OnlineChatState>(
                           buildWhen: (previous, current) =>
                               previous.seed.read != current.seed.read,
                           builder: (context, chatState) {
@@ -159,16 +159,16 @@ class _ChatViewState extends State<ChatView> {
                                     snapshot.data == null) {
                                   return const Text("No data");
                                 }
-                                final List<Message> messages = snapshot.data!
+                                final List<OnlineMessage> messages = snapshot
+                                    .data!
                                     .toList();
                                 scrollIfAtBottom();
                                 return ListView.builder(
                                   controller: scrollController,
                                   itemCount: messages.length,
                                   itemBuilder: (context, index) {
-                                    final Message msg = messages[index].decode(
-                                      chatState.seed.read,
-                                    );
+                                    final OnlineMessage msg = messages[index]
+                                        .decode(chatState.seed.read);
 
                                     final bool isOwner =
                                         msg.owner == authState.user;
@@ -249,7 +249,7 @@ class _ChatViewState extends State<ChatView> {
                         ),
                       ),
 
-                      BlocBuilder<ChatCubit, ChatState>(
+                      BlocBuilder<OnlineChatCubit, OnlineChatState>(
                         builder: (context, chatState) {
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -263,14 +263,17 @@ class _ChatViewState extends State<ChatView> {
                                       visible: !chatState.hasText,
                                       icon: Icons.add_circle,
                                       onPressed: () async {
-                                        final Seed? seed = await showSeedDialog(
-                                          context: context,
-                                          initialSeed: chatState.seed,
-                                        );
+                                        final CryptoSeed? seed =
+                                            await showSeedDialog(
+                                              context: context,
+                                              initialSeed: chatState.seed,
+                                            );
                                         if (seed == null || !context.mounted) {
                                           return;
                                         }
-                                        context.read<ChatCubit>().setSeed(seed);
+                                        context.read<OnlineChatCubit>().setSeed(
+                                          seed,
+                                        );
                                       },
                                     ),
                                     _buildIcon(
@@ -313,7 +316,7 @@ class _ChatViewState extends State<ChatView> {
                                       ),
                                     ),
                                     onChanged: context
-                                        .read<ChatCubit>()
+                                        .read<OnlineChatCubit>()
                                         .setTextState,
                                   ),
                                 ),
@@ -326,9 +329,9 @@ class _ChatViewState extends State<ChatView> {
                                             return;
                                           }
                                           await context
-                                              .read<ChatCubit>()
+                                              .read<OnlineChatCubit>()
                                               .sendMessage(
-                                                message: Message(
+                                                message: OnlineMessage(
                                                   owner: authState.user,
                                                   text: messageController.text,
                                                 ),
@@ -343,12 +346,14 @@ class _ChatViewState extends State<ChatView> {
                                       )
                                     : IconButton(
                                         onPressed: () {
-                                          context.read<ChatCubit>().sendMessage(
-                                            message: Message(
-                                              owner: authState.user,
-                                              text: "👍",
-                                            ),
-                                          );
+                                          context
+                                              .read<OnlineChatCubit>()
+                                              .sendMessage(
+                                                message: OnlineMessage(
+                                                  owner: authState.user,
+                                                  text: "👍",
+                                                ),
+                                              );
                                           scrollToBottom();
                                         },
                                         icon: Icon(
@@ -365,7 +370,7 @@ class _ChatViewState extends State<ChatView> {
                   ),
                 ),
 
-                BlocBuilder<ChatCubit, ChatState>(
+                BlocBuilder<OnlineChatCubit, OnlineChatState>(
                   builder: (context, chatState) {
                     if (chatState.isFABvisible) {
                       return Container(
