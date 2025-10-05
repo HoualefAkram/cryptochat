@@ -10,12 +10,9 @@ class AudioStreamService {
   static final AudioStreamService _instance = AudioStreamService._internal();
   factory AudioStreamService() => _instance;
   AudioStreamService._internal();
-
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
-
   StreamSubscription? _pcmSubscription;
-
   Future<void> _requestMicPermission() async {
     final status = await Permission.microphone.request();
     if (status.isGranted) {
@@ -39,7 +36,6 @@ class AudioStreamService {
       toStream: pcmController.sink,
       bufferSize: 256,
     );
-
     _pcmSubscription = pcmController.stream.listen(onAudio);
   }
 

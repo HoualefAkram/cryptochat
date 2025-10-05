@@ -35,14 +35,19 @@ class LocalChatService {
     return null;
   }
 
-  Future<void> initAudio({
+  Future<void> initAudioSend({
     required AudioStreamService audioService,
     required OnAudio onAudio,
   }) async {
-    await audioService.initPlayer();
-    await audioService.startReceiving();
     await audioService.initRecorder();
     await audioService.startMicRecording(onAudio);
+  }
+
+  Future<void> initAudioReceive({
+    required AudioStreamService audioService,
+  }) async {
+    await audioService.initPlayer();
+    await audioService.startReceiving();
   }
 
   Future<bool> connectToUser({required String serverIp}) async {
@@ -150,12 +155,7 @@ class LocalChatService {
   }
 
   Future<void> sendAudio(List<int> audio) async {
-    final String signedAudio = ComProtocol.signData(
-      type: MessageType.audio,
-      data: audio,
-    );
-    final Uint8List data = utf8.encode(signedAudio);
-    activeSocket?.add(data);
+    activeSocket?.add(audio);
   }
 
   Future<void> sendMessage(String message) async {

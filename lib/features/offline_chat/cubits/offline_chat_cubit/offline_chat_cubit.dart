@@ -16,7 +16,8 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   final AudioStreamService _audioStreamService = AudioStreamService();
 
   Future<void> initAudio() async {
-    await _localChat.initAudio(
+    _localChat.initAudioReceive(audioService: _audioStreamService);
+    await _localChat.initAudioSend(
       audioService: _audioStreamService,
       onAudio: (pcm) {
         if (state.isMicOpen) {
@@ -68,11 +69,10 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
           log("RECEIVED MESSAGE: ${message.data}");
           break;
         case MessageType.audio:
-          log("RECEIVED AUDIO");
-          _audioStreamService.onDataReceived(message.noHeader);
+          _audioStreamService.onDataReceived(message.rawData);
           break;
         case MessageType.connect:
-          log("CONNECT MESSAGE RECIEVED");
+          log("CONNECT MESSAGE RECEIVED");
           break;
         default:
           break;

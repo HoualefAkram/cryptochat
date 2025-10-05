@@ -10,26 +10,27 @@ class ComProtocol {
   ComProtocol._internal();
 
   static const String _connectMessage = "CONNECT_MESSAGE";
-  static const String _audioDataMessage = "AUDIO_DATA_MESSAGE";
   static const String _textMessage = "TEXT_MESSAGE";
 
   static String get connectMessage => _connectMessage;
-  static String get audioDataMessage => _audioDataMessage;
   static String get textMEssage => _textMessage;
 
-  static bool _isAudioDataMessage(Uint8List bytes) {
-    final String message = utf8.decode(bytes);
-    return message.startsWith(_audioDataMessage);
-  }
-
   static bool _isConnectMessage(Uint8List bytes) {
-    final String message = utf8.decode(bytes);
-    return message.startsWith(_connectMessage);
+    try {
+      final String message = utf8.decode(bytes);
+      return message.startsWith(_connectMessage);
+    } catch (_) {
+      return false;
+    }
   }
 
   static bool _isTextMessage(Uint8List bytes) {
-    final String message = utf8.decode(bytes);
-    return message.startsWith(_textMessage);
+    try {
+      final String message = utf8.decode(bytes);
+      return message.startsWith(_textMessage);
+    } catch (_) {
+      return false;
+    }
   }
 
   static Uint8List _removeHeader(Uint8List bytes) {
@@ -42,19 +43,25 @@ class ComProtocol {
   }
 
   static MessageType _messageType(Uint8List bytes) {
-    if (_isAudioDataMessage(bytes)) {
-      return MessageType.audio;
-    } else if (_isConnectMessage(bytes)) {
+    if (_isConnectMessage(bytes)) {
       return MessageType.connect;
     } else if (_isTextMessage(bytes)) {
       return MessageType.text;
     } else {
-      return MessageType.unknown;
+      return MessageType.audio;
     }
   }
 
   static OfflineMessage parseData(Uint8List bytes) {
     final MessageType type = _messageType(bytes);
+    if (type == MessageType.audio) {
+      return OfflineMessage(
+        type: type,
+        rawData: bytes,
+        noHeader: bytes,
+        data: bytes.toString(), // TODO: REMOVE OR FIX
+      );
+    }
     final Uint8List rawData = bytes;
     final Uint8List noHeader = _removeHeader(bytes);
     final String data = utf8.decode(noHeader);
@@ -74,9 +81,7 @@ class ComProtocol {
       case MessageType.text:
         prefix = _textMessage;
         break;
-      case MessageType.audio:
-        prefix = _audioDataMessage;
-        break;
+
       case MessageType.connect:
         prefix = _connectMessage;
         break;
