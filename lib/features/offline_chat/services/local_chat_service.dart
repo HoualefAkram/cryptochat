@@ -13,7 +13,8 @@ import 'package:flutter/material.dart';
 
 class LocalChatService {
   Socket? userSocket;
-  ServerSocket? selfSocket;
+  Socket? selfSocket;
+  ServerSocket? serverSocket;
 
   bool isClient = false;
   bool isServer = false;
@@ -84,7 +85,7 @@ class LocalChatService {
     VoidCallback? onClientDisconnected,
     Duration timeLimit = const Duration(seconds: 5),
   }) async {
-    selfSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
+    serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
     final ipCompleter = Completer<String>();
     for (var interface in await NetworkInterface.list()) {
       for (var addr in interface.addresses) {
@@ -115,7 +116,7 @@ class LocalChatService {
     await audioService.initPlayer();
     await audioService.startReceiving();
 
-    await for (final socket in selfSocket!) {
+    await for (final socket in serverSocket!) {
       log("New client connected: ${socket.remoteAddress.address}");
       onClientConnected?.call();
       socket.listen(
@@ -126,6 +127,7 @@ class LocalChatService {
           } else if (message.type == MessageType.connect) {
             socket.add(utf8.encode(ComProtocol.connectMessage));
             isServer = true;
+            selfSocket = socket;
           } else if (message.type == MessageType.text) {
             log("isClient: $isClient, isServer: $isServer");
             log("RECEIVED TEXT: ${message.data}");
@@ -154,16 +156,14 @@ class LocalChatService {
     if (isClient) {
       userSocket?.add(data);
     } else if (isServer) {
-      await for (final socket in selfSocket!) {
-        socket.add(data);
-      }
+      selfSocket?.add(data);
     }
   }
 
   Future<void> stop() async {
     await userSocket?.close();
-    await selfSocket?.close();
+    await serverSocket?.close();
     userSocket = null;
-    selfSocket = null;
+    serverSocket = null;
   }
 }
