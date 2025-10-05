@@ -21,7 +21,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
       onClientDisconnected: () {
         emit(OfflineChatNoUserState(serverIp: state.serverIp));
       },
-    ); 
+    );
     emit(OfflineChatNoUserState(serverIp: ip));
     return ip;
   }
@@ -42,6 +42,12 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         ),
       );
     }
+  }
+
+  void listenToMessages() {
+    _localChat.messages.listen((message) {
+      log("MESSAGE RECEIVED: ${message.data}");
+    });
   }
 
   Future<void> sendMessage(String message) async {

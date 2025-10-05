@@ -8,6 +8,7 @@ import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
 import 'package:cryptochat/features/offline_chat/services/communication_protocol_service.dart';
+import 'package:cryptochat/features/offline_chat/services/offline_messages_stream.dart';
 
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,8 @@ class LocalChatService {
   Socket? userSocket;
   Socket? selfSocket;
   ServerSocket? serverSocket;
+  final OfflineMessagesStream _offlineMessagesStream = OfflineMessagesStream();
+  Stream<OfflineMessage> get messages => _offlineMessagesStream.stream;
 
   bool isClient = false;
   bool isServer = false;
@@ -42,12 +45,14 @@ class LocalChatService {
           if (!completer.isCompleted && message.type == MessageType.connect) {
             isClient = true;
             completer.complete(true);
-          } else if (message.type == MessageType.audio) {
-            audioService.onDataReceived(data);
-          } else if (message.type == MessageType.text) {
-            log("isClient: $isClient, isServer: $isServer");
-            log("RECEIVED TEXT: ${message.data}");
           }
+          _offlineMessagesStream.add(message);
+          // else if (message.type == MessageType.audio) {
+          //   audioService.onDataReceived(data);
+          // } else if (message.type == MessageType.text) {
+          //   log("isClient: $isClient, isServer: $isServer");
+          //   log("RECEIVED TEXT: ${message.data}");
+          // }
         },
         onError: (error) {
           if (!completer.isCompleted) {
@@ -122,16 +127,19 @@ class LocalChatService {
       socket.listen(
         (data) {
           final OfflineMessage message = ComProtocol.parseData(data);
-          if (message.type == MessageType.audio) {
-            audioService.onDataReceived(data);
-          } else if (message.type == MessageType.connect) {
+          // if (message.type == MessageType.audio) {
+          //   audioService.onDataReceived(data);
+          // } else
+          if (message.type == MessageType.connect) {
             socket.add(utf8.encode(ComProtocol.connectMessage));
             isServer = true;
             selfSocket = socket;
-          } else if (message.type == MessageType.text) {
-            log("isClient: $isClient, isServer: $isServer");
-            log("RECEIVED TEXT: ${message.data}");
           }
+          // else if (message.type == MessageType.text) {
+          //   log("isClient: $isClient, isServer: $isServer");
+          //   log("RECEIVED TEXT: ${message.data}");
+          // }
+          _offlineMessagesStream.add(message);
         },
         onDone: () {
           log("Client disconnected: ${socket.remoteAddress.address}");
