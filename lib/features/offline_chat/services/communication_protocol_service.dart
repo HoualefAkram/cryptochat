@@ -63,10 +63,7 @@ class ComProtocol {
     );
   }
 
-  static String signMessage({
-    required MessageType type,
-    required String message,
-  }) {
+  static String signData({required MessageType type, required dynamic data}) {
     String prefix;
 
     switch (type) {
@@ -83,6 +80,6 @@ class ComProtocol {
         throw ArgumentError('Unsupported MessageType: $type');
     }
 
-    return "$prefix:$message";
+    return "$prefix:$data";
   }
 }

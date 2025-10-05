@@ -22,10 +22,26 @@ class LocalChatService {
   bool isClient = false;
   bool isServer = false;
 
-  Future<bool> connectToUser({
-    required String serverIp,
+  Socket? get activeSocket {
+    if (isClient) {
+      return userSocket;
+    } else if (isServer) {
+      return selfSocket;
+    }
+    return null;
+  }
+
+  Future<void> initAudio({
     required AudioStreamService audioService,
+    required OnAudio onAudio,
   }) async {
+    await audioService.initPlayer();
+    await audioService.startReceiving();
+    await audioService.initRecorder();
+    await audioService.startListening(onAudio);
+  }
+
+  Future<bool> connectToUser({required String serverIp}) async {
     final completer = Completer<bool>();
 
     try {
@@ -47,12 +63,6 @@ class LocalChatService {
             completer.complete(true);
           }
           _offlineMessagesStream.add(message);
-          // else if (message.type == MessageType.audio) {
-          //   audioService.onDataReceived(data);
-          // } else if (message.type == MessageType.text) {
-          //   log("isClient: $isClient, isServer: $isServer");
-          //   log("RECEIVED TEXT: ${message.data}");
-          // }
         },
         onError: (error) {
           if (!completer.isCompleted) {
@@ -85,7 +95,6 @@ class LocalChatService {
   }
 
   Future<String> startServer({
-    required AudioStreamService audioService,
     VoidCallback? onClientConnected,
     VoidCallback? onClientDisconnected,
     Duration timeLimit = const Duration(seconds: 5),
@@ -102,9 +111,7 @@ class LocalChatService {
         }
       }
     }
-    unawaited(
-      _handleConnections(audioService, onClientConnected, onClientDisconnected),
-    );
+    unawaited(_handleConnections(onClientConnected, onClientDisconnected));
     return ipCompleter.future.timeout(
       timeLimit,
       onTimeout: () {
@@ -114,31 +121,20 @@ class LocalChatService {
   }
 
   Future<void> _handleConnections(
-    AudioStreamService audioService,
     VoidCallback? onClientConnected,
     VoidCallback? onClientDisconnected,
   ) async {
-    await audioService.initPlayer();
-    await audioService.startReceiving();
-
     await for (final socket in serverSocket!) {
       log("New client connected: ${socket.remoteAddress.address}");
       onClientConnected?.call();
       socket.listen(
         (data) {
           final OfflineMessage message = ComProtocol.parseData(data);
-          // if (message.type == MessageType.audio) {
-          //   audioService.onDataReceived(data);
-          // } else
           if (message.type == MessageType.connect) {
             socket.add(utf8.encode(ComProtocol.connectMessage));
             isServer = true;
             selfSocket = socket;
           }
-          // else if (message.type == MessageType.text) {
-          //   log("isClient: $isClient, isServer: $isServer");
-          //   log("RECEIVED TEXT: ${message.data}");
-          // }
           _offlineMessagesStream.add(message);
         },
         onDone: () {
@@ -150,22 +146,23 @@ class LocalChatService {
   }
 
   Future<void> sendAudio(List<int> audio) async {
-    userSocket?.add(audio);
+    final String signedAudio = ComProtocol.signData(
+      type: MessageType.audio,
+      data: audio,
+    );
+    final Uint8List data = utf8.encode(signedAudio);
+    activeSocket?.add(data);
   }
 
   Future<void> sendMessage(String message) async {
     log("isClinet: $isClient, isServer: $isServer");
-    final String signedMessage = ComProtocol.signMessage(
+    final String signedMessage = ComProtocol.signData(
       type: MessageType.text,
-      message: message,
+      data: message,
     );
     log("Sending: $signedMessage");
     final Uint8List data = utf8.encode(signedMessage);
-    if (isClient) {
-      userSocket?.add(data);
-    } else if (isServer) {
-      selfSocket?.add(data);
-    }
+    activeSocket?.add(data);
   }
 
   Future<void> stop() async {

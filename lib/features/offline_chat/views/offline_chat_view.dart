@@ -19,6 +19,7 @@ class _OfflineChatViewState extends State<OfflineChatView> {
   void initState() {
     messageController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<OfflineChatCubit>().initAudio();
       context.read<OfflineChatCubit>().listenToMessages();
     });
     super.initState();
@@ -55,6 +56,12 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                     );
                   },
                   child: const Text("send"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<OfflineChatCubit>().toggleAudio();
+                  },
+                  child: Text("IS RECORDING: ${offlineState.isMicOpen}"),
                 ),
               ],
             );
