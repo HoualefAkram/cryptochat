@@ -7,6 +7,10 @@ import 'package:permission_handler/permission_handler.dart';
 typedef OnAudio = void Function(Uint8List data);
 
 class AudioStreamService {
+  static final AudioStreamService _instance = AudioStreamService._internal();
+  factory AudioStreamService() => _instance;
+  AudioStreamService._internal();
+
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
 
@@ -26,7 +30,7 @@ class AudioStreamService {
     await _recorder.openRecorder();
   }
 
-  Future<void> startListening(OnAudio onAudio) async {
+  Future<void> startMicRecording(OnAudio onAudio) async {
     final pcmController = StreamController<Uint8List>();
     await _recorder.startRecorder(
       codec: Codec.pcm16,

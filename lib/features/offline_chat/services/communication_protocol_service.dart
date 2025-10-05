@@ -5,6 +5,10 @@ import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 
 class ComProtocol {
+  static final ComProtocol _instance = ComProtocol._internal();
+  factory ComProtocol() => _instance;
+  ComProtocol._internal();
+
   static const String _connectMessage = "CONNECT_MESSAGE";
   static const String _audioDataMessage = "AUDIO_DATA_MESSAGE";
   static const String _textMessage = "TEXT_MESSAGE";

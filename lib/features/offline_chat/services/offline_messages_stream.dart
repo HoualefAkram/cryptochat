@@ -3,6 +3,11 @@ import 'dart:async';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 
 class OfflineMessagesStream {
+  static final OfflineMessagesStream _instance =
+      OfflineMessagesStream._internal();
+  factory OfflineMessagesStream() => _instance;
+  OfflineMessagesStream._internal();
+
   final StreamController<OfflineMessage> _messageController =
       StreamController<OfflineMessage>();
 

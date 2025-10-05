@@ -13,6 +13,10 @@ import 'package:cryptochat/features/offline_chat/services/offline_messages_strea
 import 'package:flutter/material.dart';
 
 class LocalChatService {
+  static final LocalChatService _instance = LocalChatService._internal();
+  factory LocalChatService() => _instance;
+  LocalChatService._internal();
+
   Socket? userSocket;
   Socket? selfSocket;
   ServerSocket? serverSocket;
@@ -38,7 +42,7 @@ class LocalChatService {
     await audioService.initPlayer();
     await audioService.startReceiving();
     await audioService.initRecorder();
-    await audioService.startListening(onAudio);
+    await audioService.startMicRecording(onAudio);
   }
 
   Future<bool> connectToUser({required String serverIp}) async {
