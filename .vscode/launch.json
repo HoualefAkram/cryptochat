@@ -18,5 +18,26 @@
             "type": "dart",
             "flutterMode": "release"
         },
+        {
+            "name" : "Pixel 9 Akram",
+            "request" : "launch",
+            "type" : "dart",
+            "deviceId" : "51060DLAQ0040C",
+        },
+        {
+            "name" : "Realme X2 Akram",
+            "request" : "launch",
+            "type" : "dart",
+            "deviceId" : "9242822c",
+        },
+
+    ],
+
+    "compounds" : [
+         {
+            "name" : "Android Devices",
+            "configurations": ["Pixel 9 Akram" , "Realme X2 Akram",]
+
+        }
     ]
 }

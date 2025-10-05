@@ -9,6 +9,8 @@ import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
 import 'package:cryptochat/features/offline_chat/services/communication_protocol_service.dart';
 
+import 'package:flutter/material.dart';
+
 class LocalChatService {
   Socket? userSocket;
   ServerSocket? selfSocket;
@@ -16,22 +18,70 @@ class LocalChatService {
   bool isClient = false;
   bool isServer = false;
 
-  Future<void> connectToUser(String serverIp) async {
-    userSocket = await Socket.connect(serverIp, 4040);
-    log("Connected to: ${userSocket!.remoteAddress.address}");
-    userSocket!.add(utf8.encode(ComProtocol.connectMessage));
-    userSocket!.listen((data) {
-      // data from other user
-      final OfflineMessage message = ComProtocol.parseData(data);
-      log("from other user: ${message.data}");
-      if (message.type == MessageType.connect) {
-        isClient = true;
-      }
-    });
+  Future<bool> connectToUser({
+    required String serverIp,
+    required AudioStreamService audioService,
+  }) async {
+    final completer = Completer<bool>();
+
+    try {
+      userSocket = await Socket.connect(
+        serverIp,
+        4040,
+        timeout: const Duration(seconds: 3),
+      );
+
+      log("Connecting to: ${userSocket!.remoteAddress.address}");
+
+      userSocket!.add(utf8.encode(ComProtocol.connectMessage));
+
+      userSocket!.listen(
+        (data) {
+          final OfflineMessage message = ComProtocol.parseData(data);
+          if (!completer.isCompleted && message.type == MessageType.connect) {
+            isClient = true;
+            completer.complete(true);
+          } else if (message.type == MessageType.audio) {
+            audioService.onDataReceived(data);
+          } else if (message.type == MessageType.text) {
+            log("isClient: $isClient, isServer: $isServer");
+            log("RECEIVED TEXT: ${message.data}");
+          }
+        },
+        onError: (error) {
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
+        },
+        onDone: () {
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
+        },
+        cancelOnError: true,
+      );
+
+      return await completer.future.timeout(
+        const Duration(seconds: 4),
+        onTimeout: () {
+          log("Connection timeout");
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
+          return false;
+        },
+      );
+    } catch (e) {
+      log("Connection error: $e");
+      completer.complete(false);
+      return false;
+    }
   }
 
   Future<String> startServer({
     required AudioStreamService audioService,
+    VoidCallback? onClientConnected,
+    VoidCallback? onClientDisconnected,
     Duration timeLimit = const Duration(seconds: 5),
   }) async {
     selfSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
@@ -46,7 +96,9 @@ class LocalChatService {
         }
       }
     }
-    unawaited(_handleConnections(audioService));
+    unawaited(
+      _handleConnections(audioService, onClientConnected, onClientDisconnected),
+    );
     return ipCompleter.future.timeout(
       timeLimit,
       onTimeout: () {
@@ -55,11 +107,17 @@ class LocalChatService {
     );
   }
 
-  Future<void> _handleConnections(AudioStreamService audioService) async {
+  Future<void> _handleConnections(
+    AudioStreamService audioService,
+    VoidCallback? onClientConnected,
+    VoidCallback? onClientDisconnected,
+  ) async {
     await audioService.initPlayer();
     await audioService.startReceiving();
+
     await for (final socket in selfSocket!) {
       log("New client connected: ${socket.remoteAddress.address}");
+      onClientConnected?.call();
       socket.listen(
         (data) {
           final OfflineMessage message = ComProtocol.parseData(data);
@@ -69,11 +127,13 @@ class LocalChatService {
             socket.add(utf8.encode(ComProtocol.connectMessage));
             isServer = true;
           } else if (message.type == MessageType.text) {
+            log("isClient: $isClient, isServer: $isServer");
             log("RECEIVED TEXT: ${message.data}");
           }
         },
         onDone: () {
           log("Client disconnected: ${socket.remoteAddress.address}");
+          onClientDisconnected?.call();
         },
       );
     }
@@ -84,7 +144,7 @@ class LocalChatService {
   }
 
   Future<void> sendMessage(String message) async {
-    log("isClinet: $isClient, isServer; $isServer");
+    log("isClinet: $isClient, isServer: $isServer");
     final String signedMessage = ComProtocol.signMessage(
       type: MessageType.text,
       message: message,

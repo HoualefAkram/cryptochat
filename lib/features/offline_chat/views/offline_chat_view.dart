@@ -1,5 +1,7 @@
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
+import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
 import 'package:cryptochat/features/offline_chat/views/no_server_view.dart';
+import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,7 +30,12 @@ class _OfflineChatViewState extends State<OfflineChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<OfflineChatCubit, OfflineChatState>(
+      body: BlocConsumer<OfflineChatCubit, OfflineChatState>(
+        listener: (context, offlineState) {
+          if (offlineState.exception is FailedToConnectToServerException) {
+            ESnackBar.error(context, "Failed to connect to server.");
+          }
+        },
         builder: (context, offlineState) {
           if (offlineState is OfflineChatConnectedState) {
             return Column(

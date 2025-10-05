@@ -1,4 +1,7 @@
+import 'dart:developer' show log;
+
 import 'package:bloc/bloc.dart';
+import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
 import 'package:cryptochat/features/offline_chat/services/local_chat_service.dart';
 
@@ -12,15 +15,33 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   Future<String> startServer() async {
     final String ip = await _localChat.startServer(
       audioService: _audioStreamService,
-    );
+      onClientConnected: () {
+        emit(OfflineChatConnectedState(serverIp: state.serverIp));
+      },
+      onClientDisconnected: () {
+        emit(OfflineChatNoUserState(serverIp: state.serverIp));
+      },
+    ); 
     emit(OfflineChatNoUserState(serverIp: ip));
     return ip;
   }
 
   Future<void> connect(String ip) async {
-    _localChat.connectToUser(ip);
-    // TODO: REMOVE
-    emit(OfflineChatConnectedState(serverIp: ip));
+    final bool connected = await _localChat.connectToUser(
+      serverIp: ip,
+      audioService: _audioStreamService,
+    );
+    log("connected: $connected");
+    if (connected) {
+      emit(OfflineChatConnectedState(serverIp: state.serverIp));
+    } else {
+      emit(
+        OfflineChatNoUserState(
+          serverIp: state.serverIp,
+          exception: FailedToConnectToServerException("Not connected"),
+        ),
+      );
+    }
   }
 
   Future<void> sendMessage(String message) async {
