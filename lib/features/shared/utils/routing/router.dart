@@ -2,6 +2,7 @@ import 'package:cryptochat/features/auth/blocs/obscure_text_cubit/obscure_text_c
 import 'package:cryptochat/features/auth/views/login_view.dart';
 import 'package:cryptochat/features/auth/views/register_view.dart';
 import 'package:cryptochat/features/auth/views/reset_password_view.dart';
+import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
 import 'package:cryptochat/features/offline_chat/views/offline_chat_view.dart';
 import 'package:cryptochat/features/online_chat/views/online_main.dart';
 import 'package:cryptochat/features/shared/utils/routing/routes.dart';
@@ -48,7 +49,10 @@ class ScreenRouter {
       case Routes.offlineChat:
         return MaterialPageRoute(
           settings: RouteSettings(name: Routes.offlineChat),
-          builder: (context) => OfflineChatView(),
+          builder: (context) => BlocProvider(
+            create: (context) => OfflineChatCubit(),
+            child: OfflineChatView(),
+          ),
         );
       default:
         return null;

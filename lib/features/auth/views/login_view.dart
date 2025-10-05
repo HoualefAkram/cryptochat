@@ -67,7 +67,7 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CAppBar(),
+        appBar: CAppBar(leading: Leading.back),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(

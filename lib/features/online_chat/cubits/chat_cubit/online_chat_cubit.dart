@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cryptochat/features/online_chat/models/online_message.dart';
 import 'package:cryptochat/features/online_chat/models/crypto_seed.dart';
-import 'package:cryptochat/features/online_chat/services/chat_service.dart';
+import 'package:cryptochat/features/online_chat/services/online_chat_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'online_chat_state.dart';

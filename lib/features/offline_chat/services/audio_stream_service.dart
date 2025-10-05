@@ -21,27 +21,21 @@ class AudioStreamService {
     }
   }
 
-  // ========== SENDER SIDE ==========
-
   Future<void> initRecorder() async {
     await _requestMicPermission();
     await _recorder.openRecorder();
   }
 
   Future<void> startListening(OnAudio onAudio) async {
-    // Make a controller to receive PCM buffers
     final pcmController = StreamController<Uint8List>();
-
-    // Start recording, streaming PCM data
     await _recorder.startRecorder(
-      codec: Codec.pcm16, // using PCM16 (Int16) codec
-      sampleRate: 16000, // typical for voice
-      numChannels: 1, // mono
-      toStream: pcmController.sink, // send data into this stream
+      codec: Codec.pcm16,
+      sampleRate: 16000,
+      numChannels: 1,
+      toStream: pcmController.sink,
       bufferSize: 256,
     );
 
-    // Listen to the PCM stream and send over socket
     _pcmSubscription = pcmController.stream.listen(onAudio);
   }
 
@@ -50,14 +44,11 @@ class AudioStreamService {
     await _pcmSubscription?.cancel();
   }
 
-  // ========== RECEIVER SIDE ==========
-
   Future<void> initPlayer() async {
     await _player.openPlayer();
   }
 
   Future<void> startReceiving() async {
-    // Set up player to accept data from stream
     await _player.startPlayerFromStream(
       codec: Codec.pcm16,
       numChannels: 1,
@@ -67,11 +58,8 @@ class AudioStreamService {
     );
   }
 
-  /// Call this when new PCM data arrives via socket
   Future<void> onDataReceived(Uint8List data) async {
-    // feed data to player sink
     await _player.feedUint8FromStream(data);
-    // (or .uint8ListSink.add(data) depending on API)
   }
 
   Future<void> stopReceiving() async {
