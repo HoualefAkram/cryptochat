@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:label="cryptochat"
+        android:label="M2 RT"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
