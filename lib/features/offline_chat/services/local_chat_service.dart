@@ -108,6 +108,10 @@ class LocalChatService {
     }
   }
 
+  bool _isPrivateLocal(String ip) {
+    return ip.startsWith('192.168.');
+  }
+
   FutureOr<String> startServer({
     VoidCallback? onClientConnected,
     VoidCallback? onClientDisconnected,
@@ -118,7 +122,9 @@ class LocalChatService {
     final ipCompleter = Completer<String>();
     for (var interface in await NetworkInterface.list()) {
       for (var addr in interface.addresses) {
-        if (addr.type == InternetAddressType.IPv4 && !addr.isLoopback) {
+        if (addr.type == InternetAddressType.IPv4 &&
+            !addr.isLoopback &&
+            _isPrivateLocal(addr.address)) {
           log("Server reachable at: ${addr.address}:4040");
           if (!ipCompleter.isCompleted) {
             ipCompleter.complete(addr.address);
