@@ -49,8 +49,9 @@ class _NoServerViewState extends State<NoServerView> {
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  Container(
+                    width: MediaQuery.sizeOf(context).width,
+                    margin: const EdgeInsets.only(bottom: 8.0),
                     child: TextField(
                       controller: ipAdressController,
                       decoration: InputDecoration(

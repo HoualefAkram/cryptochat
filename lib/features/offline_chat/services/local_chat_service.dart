@@ -23,6 +23,8 @@ class LocalChatService {
   final OfflineMessagesStream _offlineMessagesStream = OfflineMessagesStream();
   Stream<OfflineMessage> get messages => _offlineMessagesStream.stream;
 
+  String? serverIp; // to prevent multiple starts
+
   bool isClient = false;
   bool isServer = false;
 
@@ -103,11 +105,12 @@ class LocalChatService {
     }
   }
 
-  Future<String> startServer({
+  FutureOr<String> startServer({
     VoidCallback? onClientConnected,
     VoidCallback? onClientDisconnected,
     Duration timeLimit = const Duration(seconds: 5),
   }) async {
+    if (serverIp != null) return serverIp!;
     serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
     final ipCompleter = Completer<String>();
     for (var interface in await NetworkInterface.list()) {
@@ -116,6 +119,7 @@ class LocalChatService {
           log("Server reachable at: ${addr.address}:4040");
           if (!ipCompleter.isCompleted) {
             ipCompleter.complete(addr.address);
+            serverIp = addr.address;
           }
         }
       }
