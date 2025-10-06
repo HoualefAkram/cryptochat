@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:developer' show log;
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
 import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
+import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
 import 'package:cryptochat/features/offline_chat/services/local_chat_service.dart';
 
@@ -14,6 +16,14 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     : super(OfflineChatNoUserState(serverIp: "None", isMicOpen: false));
   final LocalChatService _localChat = LocalChatService();
   final AudioStreamService _audioStreamService = AudioStreamService();
+
+  final StreamController<List<OfflineMessage>> _offlineMessagesController =
+      StreamController();
+
+  final List<OfflineMessage> _currentMessages = List.empty(growable: true);
+
+  Stream<List<OfflineMessage>> getMessagesStream() =>
+      _offlineMessagesController.stream;
 
   Future<void> initAudio() async {
     _localChat.initAudioReceive(audioService: _audioStreamService);
@@ -67,6 +77,8 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
       switch (message.type) {
         case MessageType.text:
           log("RECEIVED MESSAGE: ${message.data}");
+          _currentMessages.add(message);
+          _offlineMessagesController.add(_currentMessages);
           break;
         case MessageType.audio:
           _audioStreamService.onDataReceived(message.rawData);

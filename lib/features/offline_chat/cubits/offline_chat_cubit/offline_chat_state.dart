@@ -4,6 +4,7 @@ class OfflineChatState {
   final String serverIp;
   final bool isMicOpen;
   final Exception? exception;
+
   const OfflineChatState({
     required this.serverIp,
     required this.isMicOpen,

@@ -119,7 +119,7 @@ class _OnlineChatViewState extends State<OnlineChatView> {
                     ],
                   ),
                   SizedBox(width: 12),
-                  Text("M1RT 2024/2025"),
+                  Text("M2 RT 2025/2026"),
                 ],
               ),
               actions: [
