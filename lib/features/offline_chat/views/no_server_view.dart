@@ -81,7 +81,10 @@ class _NoServerViewState extends State<NoServerView> {
                           ipAdressController.text,
                         );
                       },
-                      child: const Text("Connect"),
+                      child: const Text(
+                        "Connect",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ],
