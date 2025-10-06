@@ -205,14 +205,47 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                           ),
                         ),
 
-                        TextField(controller: messageController),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<OfflineChatCubit>().sendMessage(
-                              messageController.text,
-                            );
-                          },
-                          child: const Text("Send"),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: messageController,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.all(8),
+                                    fillColor: CustomColors.bubleGrey,
+                                    hintText: "Message",
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  if (messageController.text.trim().isEmpty) {
+                                    return;
+                                  }
+                                  await context
+                                      .read<OfflineChatCubit>()
+                                      .sendMessage(messageController.text);
+                                  messageController.clear();
+                                },
+                                icon: Icon(
+                                  Icons.send,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
