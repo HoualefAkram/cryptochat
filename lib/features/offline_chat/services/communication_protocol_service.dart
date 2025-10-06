@@ -52,13 +52,14 @@ class ComProtocol {
     }
   }
 
-  static OfflineMessage parseData(Uint8List bytes) {
+  static OfflineMessage parseData(Uint8List bytes, String owner) {
     final MessageType type = _messageType(bytes);
     if (type == MessageType.audio) {
       return OfflineMessage(
         type: type,
         rawData: bytes,
         noHeader: bytes,
+        owner: owner,
         data: bytes.toString(), // TODO: REMOVE OR FIX
       );
     }
@@ -71,6 +72,7 @@ class ComProtocol {
       rawData: rawData,
       noHeader: noHeader,
       data: data,
+      owner: owner,
     );
   }
 

@@ -25,13 +25,16 @@ class LocalChatService {
 
   String? serverIp; // to prevent multiple starts
 
-  bool isClient = false;
-  bool isServer = false;
+  bool _isClient = false;
+  bool _isServer = false;
+
+  bool get isClinet => _isClient;
+  bool get isServer => _isServer;
 
   Socket? get activeSocket {
-    if (isClient) {
+    if (_isClient) {
       return userSocket;
-    } else if (isServer) {
+    } else if (_isServer) {
       return selfSocket;
     }
     return null;
@@ -68,9 +71,9 @@ class LocalChatService {
 
       userSocket!.listen(
         (data) {
-          final OfflineMessage message = ComProtocol.parseData(data);
+          final OfflineMessage message = ComProtocol.parseData(data, "1");
           if (!completer.isCompleted && message.type == MessageType.connect) {
-            isClient = true;
+            _isClient = true;
             completer.complete(true);
           }
           _offlineMessagesStream.add(message);
@@ -142,10 +145,10 @@ class LocalChatService {
       onClientConnected?.call();
       socket.listen(
         (data) {
-          final OfflineMessage message = ComProtocol.parseData(data);
+          final OfflineMessage message = ComProtocol.parseData(data, "2");
           if (message.type == MessageType.connect) {
             socket.add(utf8.encode(ComProtocol.connectMessage));
-            isServer = true;
+            _isServer = true;
             selfSocket = socket;
           }
           _offlineMessagesStream.add(message);
@@ -163,7 +166,7 @@ class LocalChatService {
   }
 
   Future<void> sendMessage(String message) async {
-    log("isClinet: $isClient, isServer: $isServer");
+    log("isClinet: $_isClient, isServer: $_isServer");
     final String signedMessage = ComProtocol.signData(
       type: MessageType.text,
       data: message,

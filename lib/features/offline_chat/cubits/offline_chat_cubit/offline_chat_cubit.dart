@@ -93,6 +93,8 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   }
 
   Future<void> sendMessage(String message) async {
+    _currentMessages.add(OfflineMessage.fromString(message, getId()));
+    _offlineMessagesController.add(_currentMessages);
     _localChat.sendMessage(message);
   }
 
@@ -102,5 +104,17 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
 
   Future<void> toggleAudio() async {
     emit(state.copyWith(isMicOpen: !state.isMicOpen));
+  }
+
+  bool isOwner(OfflineMessage msg) {
+    final String owner = msg.owner;
+    if (_localChat.isServer && owner == "1") return true;
+    if (_localChat.isClinet && owner == "2") return true;
+    return false;
+  }
+
+  String getId() {
+    if (_localChat.isServer) return "1";
+    return "2";
   }
 }

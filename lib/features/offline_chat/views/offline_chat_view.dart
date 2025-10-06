@@ -126,79 +126,79 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                                 itemCount: messages.length,
                                 itemBuilder: (context, index) {
                                   final OfflineMessage msg = messages[index];
-                                  return Text(msg.data);
 
-                                  // final bool isOwner =
-                                  //     msg.owner == authState.user;
-                                  // return Container(
-                                  //   margin: EdgeInsets.all(2),
-                                  //   child: Row(
-                                  //     mainAxisSize: MainAxisSize.max,
-                                  //     crossAxisAlignment:
-                                  //         CrossAxisAlignment.end,
-                                  //     mainAxisAlignment: isOwner
-                                  //         ? MainAxisAlignment.end
-                                  //         : MainAxisAlignment.start,
-                                  //     children: [
-                                  //       if (!isOwner)
-                                  //         CircleAvatar(
-                                  //           maxRadius: 14,
-                                  //           backgroundColor: Colors.grey,
-                                  //           backgroundImage: NetworkImage(
-                                  //             CImage.nProfilePic,
-                                  //           ),
-                                  //         ),
-                                  //       SizedBox(width: 10),
-                                  //       Column(
-                                  //         crossAxisAlignment: isOwner
-                                  //             ? CrossAxisAlignment.end
-                                  //             : CrossAxisAlignment.start,
-                                  //         children: [
-                                  //           if (!isOwner)
-                                  //             Padding(
-                                  //               padding: const EdgeInsets.all(
-                                  //                 2,
-                                  //               ),
-                                  //               child: Text(
-                                  //                 msg.owner.name,
-                                  //                 style: TextStyle(
-                                  //                   color: Colors.grey,
-                                  //                   fontSize: 12,
-                                  //                 ),
-                                  //               ),
-                                  //             ),
+                                  final bool isOwner = context
+                                      .read<OfflineChatCubit>()
+                                      .isOwner(msg);
+                                  return Container(
+                                    margin: EdgeInsets.all(2),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment: isOwner
+                                          ? MainAxisAlignment.end
+                                          : MainAxisAlignment.start,
+                                      children: [
+                                        if (!isOwner)
+                                          CircleAvatar(
+                                            maxRadius: 14,
+                                            backgroundColor: Colors.grey,
+                                            backgroundImage: NetworkImage(
+                                              CImage.nProfilePic,
+                                            ),
+                                          ),
+                                        SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment: isOwner
+                                              ? CrossAxisAlignment.end
+                                              : CrossAxisAlignment.start,
+                                          children: [
+                                            if (!isOwner)
+                                              Padding(
+                                                padding: const EdgeInsets.all(
+                                                  2,
+                                                ),
+                                                child: Text(
+                                                  "Owner",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
 
-                                  //           Container(
-                                  //             padding: EdgeInsets.all(8),
-                                  //             constraints: BoxConstraints(
-                                  //               maxWidth:
-                                  //                   MediaQuery.sizeOf(
-                                  //                     context,
-                                  //                   ).width *
-                                  //                   0.5,
-                                  //             ),
-                                  //             decoration: BoxDecoration(
-                                  //               color: isOwner
-                                  //                   ? Theme.of(
-                                  //                       context,
-                                  //                     ).primaryColor
-                                  //                   : CustomColors.bubleGrey,
-                                  //               borderRadius:
-                                  //                   BorderRadius.circular(24),
-                                  //             ),
-                                  //             child: Text(
-                                  //               msg.text,
-                                  //               style: Theme.of(context)
-                                  //                   .textTheme
-                                  //                   .bodyLarge
-                                  //                   ?.copyWith(),
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // );
+                                            Container(
+                                              padding: EdgeInsets.all(8),
+                                              constraints: BoxConstraints(
+                                                maxWidth:
+                                                    MediaQuery.sizeOf(
+                                                      context,
+                                                    ).width *
+                                                    0.5,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: isOwner
+                                                    ? Theme.of(
+                                                        context,
+                                                      ).primaryColor
+                                                    : CustomColors.bubleGrey,
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: Text(
+                                                msg.data,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyLarge
+                                                    ?.copyWith(),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 },
                               );
                             },
