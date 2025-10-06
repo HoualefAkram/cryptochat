@@ -33,38 +33,69 @@ class _NoServerViewState extends State<NoServerView> {
     return BlocBuilder<OfflineChatCubit, OfflineChatState>(
       builder: (context, offlineState) {
         return Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Your IP: ${offlineState.serverIp}",
-                  style: TextStyle(fontSize: 23),
-                ),
-                const SizedBox(height: 20),
-                Text("No conncted user.", style: TextStyle(fontSize: 18)),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: ipAdressController,
-                    decoration: InputDecoration(hintText: "User IP"),
+          body: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Your IP: ${offlineState.serverIp}",
+                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
                   ),
-                ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<OfflineChatCubit>().connect(
-                      ipAdressController.text,
-                    );
-                  },
-                  child: const Text("Connect"),
-                ),
-              ],
+                  const SizedBox(height: 14),
+                  Text(
+                    "No conncted user.",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: ipAdressController,
+                      decoration: InputDecoration(
+                        hintText: "User IP",
+                        hintStyle: TextStyle(color: Colors.white30),
+                        filled: true,
+                        fillColor: Color.fromARGB(255, 51, 62, 77),
+                        enabledBorder: _buildBorder(),
+                        focusedBorder: _buildBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  SizedBox(
+                    width: MediaQuery.sizeOf(context).width,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        context.read<OfflineChatCubit>().connect(
+                          ipAdressController.text,
+                        );
+                      },
+                      child: const Text("Connect"),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  OutlineInputBorder _buildBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Color.fromARGB(255, 64, 78, 97), width: 1),
     );
   }
 }
