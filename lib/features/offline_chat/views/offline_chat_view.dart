@@ -22,7 +22,7 @@ class _OfflineChatViewState extends State<OfflineChatView> {
   void initState() {
     messageController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<OfflineChatCubit>().listenToMessages();
+      context.read<OfflineChatCubit>().initMessages();
     });
     super.initState();
   }

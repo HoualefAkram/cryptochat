@@ -77,9 +77,9 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     }
   }
 
-  void listenToMessages() {
+  void initMessages() {
     final bool hasListener = _messageSub != null;
-    dev.log("listenToMessages called. hasListener: $hasListener");
+    _offlineMessagesController.add(_currentMessages); // init messages
     if (hasListener) return;
     _messageSub = _localChat.messages.listen((message) {
       switch (message.type) {
