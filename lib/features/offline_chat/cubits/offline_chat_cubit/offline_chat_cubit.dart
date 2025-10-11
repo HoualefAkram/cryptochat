@@ -49,16 +49,22 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     final String ip = await _localChat.startServer(
       onClientConnected: () {
         emit(
-          OfflineChatConnectedState(serverIp: state.serverIp, isMicOpen: false),
+          OfflineChatConnectedState(
+            serverIp: state.serverIp,
+            isMicOpen: state.isMicOpen,
+          ),
         );
       },
       onClientDisconnected: () {
         emit(
-          OfflineChatNoUserState(serverIp: state.serverIp, isMicOpen: false),
+          OfflineChatNoUserState(
+            serverIp: state.serverIp,
+            isMicOpen: state.isMicOpen,
+          ),
         );
       },
     );
-    emit(OfflineChatNoUserState(serverIp: ip, isMicOpen: false));
+    emit(OfflineChatNoUserState(serverIp: ip, isMicOpen: state.isMicOpen));
     return ip;
   }
 
@@ -67,7 +73,10 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     dev.log("connected: $connected");
     if (connected) {
       emit(
-        OfflineChatConnectedState(serverIp: state.serverIp, isMicOpen: false),
+        OfflineChatConnectedState(
+          serverIp: state.serverIp,
+          isMicOpen: state.isMicOpen,
+        ),
       );
     } else {
       emit(
