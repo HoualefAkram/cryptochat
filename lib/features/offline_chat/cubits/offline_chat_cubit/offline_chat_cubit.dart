@@ -14,7 +14,7 @@ part 'offline_chat_state.dart';
 
 class OfflineChatCubit extends Cubit<OfflineChatState> {
   OfflineChatCubit()
-    : super(OfflineChatNoUserState(serverIp: "None", isMicOpen: false));
+    : super(OfflineChatNoUserState(serverIp: "None", isMicOpen: true));
   final LocalChatService _localChat = LocalChatService();
   final AudioStreamService _audioStreamService = AudioStreamService();
 
