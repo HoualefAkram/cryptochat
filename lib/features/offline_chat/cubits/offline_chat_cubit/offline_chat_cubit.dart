@@ -55,7 +55,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   }
 
   Future<void> connect(String ip) async {
-    final bool connected = await _localChat.connectToUser(serverIp: ip);
+    final bool connected = await _localChat.connectToUser(ip: ip);
     log("connected: $connected");
     if (connected) {
       emit(
@@ -81,7 +81,9 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
           _offlineMessagesController.add(_currentMessages);
           break;
         case MessageType.audio:
-          _audioStreamService.onDataReceived(message.rawData);
+          _audioStreamService.onDataReceived(
+            Uint8List.fromList(message.data.cast<int>()),
+          );
           break;
         case MessageType.connect:
           log("CONNECT MESSAGE RECEIVED");
@@ -93,7 +95,13 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   }
 
   Future<void> sendMessage(String message) async {
-    _currentMessages.add(OfflineMessage.fromString(message, getId()));
+    _currentMessages.add(
+      OfflineMessage(
+        type: MessageType.text,
+        data: message,
+        owner: _localChat.selfIp!,
+      ),
+    );
     _offlineMessagesController.add(_currentMessages);
     _localChat.sendMessage(message);
   }
@@ -106,15 +114,5 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     emit(state.copyWith(isMicOpen: !state.isMicOpen));
   }
 
-  bool isOwner(OfflineMessage msg) {
-    final String owner = msg.owner;
-    if (_localChat.isServer && owner == "1") return true;
-    if (_localChat.isClinet && owner == "2") return true;
-    return false;
-  }
-
-  String getId() {
-    if (_localChat.isServer) return "1";
-    return "2";
-  }
+  bool isOwner(OfflineMessage msg) => _localChat.selfIp == msg.owner;
 }

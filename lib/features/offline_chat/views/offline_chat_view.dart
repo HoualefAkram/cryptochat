@@ -1,8 +1,8 @@
-import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 import 'package:cryptochat/features/offline_chat/views/no_server_view.dart';
+import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
 import 'package:cryptochat/features/shared/widgets/app_bar.dart';
@@ -59,7 +59,9 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                         CircleAvatar(
                           backgroundColor: Colors.grey,
                           minRadius: 22,
-                          backgroundImage: NetworkImage(CImage.nUstoPic),
+                          backgroundImage: AssetImage(
+                            CustomIcon.resolve(CIcon.user),
+                          ),
                         ),
                         Container(
                           height: 16,
@@ -144,8 +146,8 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                                           CircleAvatar(
                                             maxRadius: 14,
                                             backgroundColor: Colors.grey,
-                                            backgroundImage: NetworkImage(
-                                              CImage.nProfilePic,
+                                            backgroundImage: AssetImage(
+                                              CustomIcon.resolve(CIcon.user),
                                             ),
                                           ),
                                         SizedBox(width: 10),
@@ -160,7 +162,7 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                                                   2,
                                                 ),
                                                 child: Text(
-                                                  "Owner",
+                                                  msg.owner,
                                                   style: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 12,

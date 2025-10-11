@@ -3,6 +3,7 @@ import 'package:cryptochat/features/auth/constants/images.dart';
 import 'package:cryptochat/features/online_chat/cubits/chat_cubit/online_chat_cubit.dart';
 import 'package:cryptochat/features/online_chat/models/online_message.dart';
 import 'package:cryptochat/features/online_chat/models/crypto_seed.dart';
+import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
 import 'package:cryptochat/features/shared/widgets/app_bar.dart';
 import 'package:cryptochat/features/shared/widgets/seed_dialog.dart';
@@ -186,8 +187,8 @@ class _OnlineChatViewState extends State<OnlineChatView> {
                                             CircleAvatar(
                                               maxRadius: 14,
                                               backgroundColor: Colors.grey,
-                                              backgroundImage: NetworkImage(
-                                                CImage.nProfilePic,
+                                              child: CustomIcon.build(
+                                                CIcon.user,
                                               ),
                                             ),
                                           SizedBox(width: 10),

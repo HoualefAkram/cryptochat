@@ -27,7 +27,7 @@ class CustomIcon {
     int? cacheHeight,
   }) {
     return Image.asset(
-      _CIconResolver.resolve(cicon),
+      resolve(cicon),
       key: key,
       frameBuilder: frameBuilder,
       errorBuilder: errorBuilder,
@@ -52,13 +52,16 @@ class CustomIcon {
       cacheHeight: cacheHeight,
     );
   }
+
+  static String resolve(CIcon cicon) => CIconResolver.resolve(cicon);
 }
 
-enum CIcon { messenger }
+enum CIcon { messenger, user }
 
-class _CIconResolver {
+extension CIconResolver on CustomIcon {
   static const Map<CIcon, String> _iconMap = {
     CIcon.messenger: "assets/icons/messenger.png",
+    CIcon.user: "assets/icons/user.png",
   };
 
   static String resolve(CIcon cicon) {

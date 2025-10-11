@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
@@ -17,13 +16,14 @@ class LocalChatService {
   factory LocalChatService() => _instance;
   LocalChatService._internal();
 
-  Socket? userSocket;
-  Socket? selfSocket;
-  ServerSocket? serverSocket;
+  Socket? _userSocket;
+  Socket? _selfSocket;
+  ServerSocket? _serverSocket;
   final OfflineMessagesStream _offlineMessagesStream = OfflineMessagesStream();
   Stream<OfflineMessage> get messages => _offlineMessagesStream.stream;
+  String? get selfIp => _selfServerIp;
 
-  String? serverIp; // to prevent multiple starts
+  String? _selfServerIp; // to prevent multiple starts
 
   bool _isClient = false;
   bool _isServer = false;
@@ -33,9 +33,9 @@ class LocalChatService {
 
   Socket? get activeSocket {
     if (_isClient) {
-      return userSocket;
+      return _userSocket;
     } else if (_isServer) {
-      return selfSocket;
+      return _selfSocket;
     }
     return null;
   }
@@ -55,23 +55,29 @@ class LocalChatService {
     await audioService.startReceiving();
   }
 
-  Future<bool> connectToUser({required String serverIp}) async {
+  Future<bool> connectToUser({required String ip}) async {
     final completer = Completer<bool>();
 
     try {
-      userSocket = await Socket.connect(
-        serverIp,
+      _userSocket = await Socket.connect(
+        ip,
         4040,
         timeout: const Duration(seconds: 3),
       );
 
-      log("Connecting to: ${userSocket!.remoteAddress.address}");
+      log("Connecting to: ${_userSocket!.remoteAddress.address}");
 
-      userSocket!.add(utf8.encode(ComProtocol.connectMessage));
+      _userSocket!.add(
+        ComProtocol.encode(
+          type: MessageType.connect,
+          owner: _selfServerIp!,
+          data: null,
+        ),
+      );
 
-      userSocket!.listen(
+      _userSocket!.listen(
         (data) {
-          final OfflineMessage message = ComProtocol.parseData(data, "1");
+          final OfflineMessage message = ComProtocol.decode(data);
           if (!completer.isCompleted && message.type == MessageType.connect) {
             _isClient = true;
             completer.complete(true);
@@ -117,8 +123,8 @@ class LocalChatService {
     VoidCallback? onClientDisconnected,
     Duration timeLimit = const Duration(seconds: 5),
   }) async {
-    if (serverIp != null) return serverIp!;
-    serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
+    if (_selfServerIp != null) return _selfServerIp!;
+    _serverSocket = await ServerSocket.bind(InternetAddress.anyIPv4, 4040);
     final ipCompleter = Completer<String>();
     for (var interface in await NetworkInterface.list()) {
       for (var addr in interface.addresses) {
@@ -128,7 +134,7 @@ class LocalChatService {
           log("Server reachable at: ${addr.address}:4040");
           if (!ipCompleter.isCompleted) {
             ipCompleter.complete(addr.address);
-            serverIp = addr.address;
+            _selfServerIp = addr.address;
           }
         }
       }
@@ -146,16 +152,22 @@ class LocalChatService {
     VoidCallback? onClientConnected,
     VoidCallback? onClientDisconnected,
   ) async {
-    await for (final socket in serverSocket!) {
+    await for (final socket in _serverSocket!) {
       log("New client connected: ${socket.remoteAddress.address}");
       onClientConnected?.call();
       socket.listen(
         (data) {
-          final OfflineMessage message = ComProtocol.parseData(data, "2");
+          final OfflineMessage message = ComProtocol.decode(data);
           if (message.type == MessageType.connect) {
-            socket.add(utf8.encode(ComProtocol.connectMessage));
+            socket.add(
+              ComProtocol.encode(
+                type: MessageType.connect,
+                owner: _selfServerIp!,
+                data: null,
+              ),
+            );
             _isServer = true;
-            selfSocket = socket;
+            _selfSocket = socket;
           }
           _offlineMessagesStream.add(message);
         },
@@ -168,24 +180,28 @@ class LocalChatService {
   }
 
   Future<void> sendAudio(List<int> audio) async {
-    activeSocket?.add(audio);
+    final data = ComProtocol.encode(
+      type: MessageType.audio,
+      owner: _selfServerIp!,
+      data: audio,
+    );
+    activeSocket?.add(data);
   }
 
   Future<void> sendMessage(String message) async {
     log("isClinet: $_isClient, isServer: $_isServer");
-    final String signedMessage = ComProtocol.signData(
+    final Uint8List data = ComProtocol.encode(
       type: MessageType.text,
+      owner: _selfServerIp!,
       data: message,
     );
-    log("Sending: $signedMessage");
-    final Uint8List data = utf8.encode(signedMessage);
     activeSocket?.add(data);
   }
 
   Future<void> stop() async {
-    await userSocket?.close();
-    await serverSocket?.close();
-    userSocket = null;
-    serverSocket = null;
+    await _userSocket?.close();
+    await _serverSocket?.close();
+    _userSocket = null;
+    _serverSocket = null;
   }
 }
