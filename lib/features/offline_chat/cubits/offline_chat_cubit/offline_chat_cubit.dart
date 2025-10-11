@@ -42,7 +42,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
 
   Future<void> stopAudio() async {
     await _localChat.stopReceivingAudio(audioService: _audioStreamService);
-    await _localChat.stopReceivingAudio(audioService: _audioStreamService);
+    await _localChat.stopRecordingAudio(audioService: _audioStreamService);
   }
 
   Future<String> startServer() async {
@@ -149,6 +149,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               isMicOpen: state.isMicOpen,
             ),
           );
+          stopAudio();
           break;
         default:
           break;

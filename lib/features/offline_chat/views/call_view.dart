@@ -56,41 +56,19 @@ class _CallViewState extends State<CallView> {
         children: [
           CircleAvatar(
             backgroundColor: Colors.grey,
-            minRadius: 30,
+            radius: 60,
             backgroundImage: AssetImage(CustomIcon.resolve(CIcon.user)),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           Text("Status: ${state.callStatus.name.toUpperCase()}"),
-          const SizedBox(height: 22),
+          const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (state.callStatus == CallStatus.incoming)
-                Column(
-                  children: [
-                    ElevatedButton.icon(
-                      style: ButtonStyle(
-                        shape: WidgetStatePropertyAll(CircleBorder()),
-                        backgroundColor: WidgetStatePropertyAll(Colors.green),
-                      ),
-                      onPressed: () {
-                        context.read<OfflineChatCubit>().acceptCall();
-                      },
-                      label: Icon(Icons.phone_enabled),
-                    ),
-                    const SizedBox(height: 6),
-                    Text("Accept"),
-                  ],
-                ),
-              const SizedBox(width: 50),
               Column(
                 children: [
-                  ElevatedButton.icon(
-                    style: ButtonStyle(
-                      shape: WidgetStatePropertyAll(CircleBorder()),
-                      backgroundColor: WidgetStatePropertyAll(Colors.red),
-                    ),
-                    onPressed: () {
+                  InkWell(
+                    onTap: () {
                       if (state.callStatus == CallStatus.incoming) {
                         context.read<OfflineChatCubit>().refuseCall();
                       }
@@ -98,12 +76,45 @@ class _CallViewState extends State<CallView> {
                         context.read<OfflineChatCubit>().endCall();
                       }
                     },
-                    label: Icon(Icons.phone_disabled_rounded),
+                    child: Ink(
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.phone_disabled_rounded),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 8),
                   Text("Decline"),
                 ],
               ),
+              if (state.callStatus == CallStatus.incoming)
+                const SizedBox(width: 50),
+              if (state.callStatus == CallStatus.incoming)
+                Column(
+                  children: [
+                    InkWell(
+                      onTap: context.read<OfflineChatCubit>().acceptCall,
+                      child: Ink(
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.phone_enabled_rounded),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text("Accept"),
+                  ],
+                ),
             ],
           ),
         ],
