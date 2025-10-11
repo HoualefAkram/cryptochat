@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:developer' as dev;
 import 'dart:typed_data';
-
 import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 
@@ -15,7 +13,6 @@ class ComProtocol {
     final Map<String, dynamic> json = jsonDecode(decodedUtf8);
     final Map<String, dynamic> headers = json["headers"];
     final Map<String, dynamic> body = json["body"];
-    dev.log("decoded message: headers: $headers");
     return OfflineMessage(
       owner: headers["owner"],
       type: MessageTypeParser.fromString(headers["type"] as String),
@@ -32,7 +29,6 @@ class ComProtocol {
     final Map<String, dynamic> body = {"data": data};
     final Map<String, dynamic> request = {"headers": headers, "body": body};
     final String encodedReq = jsonEncode(request);
-    dev.log("encoded message: $encodedReq");
     final Uint8List utf8Request = utf8.encode(encodedReq);
 
     return utf8Request;

@@ -198,6 +198,51 @@ class LocalChatService {
     activeSocket?.add(data);
   }
 
+  Future<void> startVoiceConnection() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.requestCall,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
+  Future<void> notifyRinging() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.ringing,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
+  Future<void> refuseCall() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.refuseCall,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
+  Future<void> acceptCall() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.acceptCall,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
+  Future<void> endCall() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.endCall,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
   Future<void> stop() async {
     await _userSocket?.close();
     await _serverSocket?.close();

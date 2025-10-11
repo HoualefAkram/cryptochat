@@ -9,7 +9,7 @@ class OfflineMessagesStream {
   OfflineMessagesStream._internal();
 
   final StreamController<OfflineMessage> _messageController =
-      StreamController<OfflineMessage>();
+      StreamController<OfflineMessage>.broadcast();
 
   Stream<OfflineMessage> get stream => _messageController.stream;
 

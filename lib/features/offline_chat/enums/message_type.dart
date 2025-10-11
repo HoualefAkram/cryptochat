@@ -2,10 +2,11 @@ enum MessageType {
   text,
   audio,
   connect,
-  ringingForUser,
-  incomingCall,
+  requestCall,
+  ringing,
   refuseCall,
   acceptCall,
+  endCall,
   unknown,
 }
 
@@ -18,14 +19,16 @@ extension MessageTypeParser on MessageType {
         return MessageType.audio;
       case "connect":
         return MessageType.connect;
-      case "ringingForUser":
-        return MessageType.ringingForUser;
-      case "incomingCall":
-        return MessageType.incomingCall;
+      case "requestCall":
+        return MessageType.requestCall;
+      case "ringing":
+        return MessageType.ringing;
       case "refuseCall":
         return MessageType.refuseCall;
       case "acceptCall":
         return MessageType.acceptCall;
+      case "endCall":
+        return MessageType.endCall;
       default:
         return MessageType.unknown;
     }

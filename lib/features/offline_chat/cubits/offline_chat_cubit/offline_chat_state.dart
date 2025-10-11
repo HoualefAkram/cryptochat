@@ -14,6 +14,7 @@ class OfflineChatState {
   OfflineChatState copyWith({
     String? serverIp,
     bool? isMicOpen,
+    bool receivedCall = false,
     Exception? exception,
   }) => OfflineChatState(
     serverIp: serverIp ?? this.serverIp,
@@ -33,6 +34,7 @@ final class OfflineChatNoUserState extends OfflineChatState {
   OfflineChatState copyWith({
     String? serverIp,
     bool? isMicOpen,
+    bool receivedCall = false,
     Exception? exception,
   }) => OfflineChatNoUserState(
     serverIp: serverIp ?? super.serverIp,
@@ -52,10 +54,37 @@ final class OfflineChatConnectedState extends OfflineChatState {
   OfflineChatState copyWith({
     String? serverIp,
     bool? isMicOpen,
+    bool receivedCall = false,
     Exception? exception,
   }) => OfflineChatConnectedState(
     serverIp: serverIp ?? super.serverIp,
     isMicOpen: isMicOpen ?? super.isMicOpen,
     exception: exception,
+  );
+}
+
+final class OfflineChatCallState extends OfflineChatState {
+  OfflineChatCallState({
+    required super.serverIp,
+    required super.isMicOpen,
+    required this.callStatus,
+    super.exception,
+  });
+
+  final CallStatus callStatus;
+
+  @override
+  OfflineChatCallState copyWith({
+    String? serverIp,
+    bool? isMicOpen,
+    bool receivedCall = false,
+    CallStatus? callStatus,
+    Exception? exception,
+  }) => OfflineChatCallState(
+    serverIp: serverIp ?? super.serverIp,
+    isMicOpen: isMicOpen ?? super.isMicOpen,
+    exception: exception,
+
+    callStatus: callStatus ?? this.callStatus,
   );
 }

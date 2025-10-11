@@ -1,6 +1,7 @@
 import 'package:cryptochat/features/auth/blocs/auth_bloc/auth_bloc.dart';
 
 import 'package:cryptochat/features/auth/services/auth_service.dart';
+import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
 import 'package:cryptochat/features/online_chat/cubits/chat_cubit/online_chat_cubit.dart';
 import 'package:cryptochat/features/shared/cubits/theme_cubit/theme_cubit.dart';
 import 'package:cryptochat/features/shared/utils/routing/router.dart';
@@ -16,6 +17,7 @@ void main() async {
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => AuthBloc(AuthService.firebase())),
         BlocProvider(create: (context) => OnlineChatCubit()),
+        BlocProvider(create: (context) => OfflineChatCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {

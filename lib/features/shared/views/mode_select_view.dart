@@ -59,7 +59,7 @@ class _ModeSelectViewState extends State<ModeSelectView> {
               text2: "Local network only",
               icon: Icons.wifi_off_rounded,
               onClick: () {
-                Navigator.of(context).pushNamed(Routes.offlineChat);
+                Navigator.of(context).pushNamed(Routes.noServer);
               },
             ),
           ],

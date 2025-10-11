@@ -1,7 +1,6 @@
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
-import 'package:cryptochat/features/offline_chat/views/no_server_view.dart';
 import 'package:cryptochat/features/shared/utils/custom_icon/custom_icon.dart';
 import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:cryptochat/features/shared/utils/themes/themes.dart';
@@ -23,7 +22,6 @@ class _OfflineChatViewState extends State<OfflineChatView> {
   void initState() {
     messageController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<OfflineChatCubit>().initAudio();
       context.read<OfflineChatCubit>().listenToMessages();
     });
     super.initState();
@@ -83,13 +81,11 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                     margin: EdgeInsets.all(12),
                     child: InkWell(
                       onTap: () {
-                        context.read<OfflineChatCubit>().toggleAudio();
+                        context.read<OfflineChatCubit>().startVoiceConnection();
                       },
                       child: Icon(
                         Icons.call,
-                        color: offlineState.isMicOpen
-                            ? Colors.green
-                            : Colors.red,
+                        color: Theme.of(context).primaryColor,
                         size: 28,
                       ),
                     ),
@@ -257,7 +253,11 @@ class _OfflineChatViewState extends State<OfflineChatView> {
             ),
           );
         } else {
-          return NoServerView();
+          return Scaffold(
+            body: Center(
+              child: Text("Unknown state: ${offlineState.runtimeType}"),
+            ),
+          );
         }
       },
     );

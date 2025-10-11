@@ -1,4 +1,6 @@
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_cubit.dart';
+import 'package:cryptochat/features/shared/utils/routing/routes.dart';
+import 'package:cryptochat/features/shared/utils/snackbar/generic_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,69 +32,107 @@ class _NoServerViewState extends State<NoServerView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OfflineChatCubit, OfflineChatState>(
-      builder: (context, offlineState) {
-        return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Your IP: ${offlineState.serverIp}",
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(
-                    "No conncted user.",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    child: TextField(
-                      controller: ipAdressController,
-                      decoration: InputDecoration(
-                        hintText: "User IP",
-                        hintStyle: TextStyle(color: Colors.white30),
-                        filled: true,
-                        fillColor: Color.fromARGB(255, 51, 62, 77),
-                        enabledBorder: _buildBorder(),
-                        focusedBorder: _buildBorder(),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<OfflineChatCubit, OfflineChatState>(
+          // listener for navigation
+          listenWhen: (previous, current) {
+            return previous.runtimeType != current.runtimeType;
+          },
+          listener: (context, offlineState) {
+            if (offlineState is OfflineChatConnectedState) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                Routes.offlineChat,
+                (route) => route.settings.name == Routes.noServer,
+              );
+            }
+            if (offlineState is OfflineChatCallState) {
+              Navigator.of(context).pushNamed(Routes.call);
+            }
+            if (offlineState is OfflineChatNoUserState) {
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil(Routes.noServer, (route) => false);
+            }
+          },
+        ),
+        BlocListener<OfflineChatCubit, OfflineChatState>(
+          listener: (context, offlineState) {
+            // Listener for erros
+            if (offlineState.exception != null) {
+              ESnackBar.error(context, offlineState.exception.toString());
+            }
+          },
+        ),
+      ],
+
+      child: BlocBuilder<OfflineChatCubit, OfflineChatState>(
+        builder: (context, offlineState) {
+          return Scaffold(
+            body: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Your IP: ${offlineState.serverIp}",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
+                    const SizedBox(height: 14),
+                    Text(
+                      "No conncted user.",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      width: MediaQuery.sizeOf(context).width,
+                      margin: const EdgeInsets.only(bottom: 8.0),
+                      child: TextField(
+                        controller: ipAdressController,
+                        decoration: InputDecoration(
+                          hintText: "User IP",
+                          hintStyle: TextStyle(color: Colors.white30),
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 51, 62, 77),
+                          enabledBorder: _buildBorder(),
+                          focusedBorder: _buildBorder(),
                         ),
                       ),
-                      onPressed: () {
-                        context.read<OfflineChatCubit>().connect(
-                          ipAdressController.text,
-                        );
-                      },
-                      child: const Text(
-                        "Connect",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          context.read<OfflineChatCubit>().connect(
+                            ipAdressController.text,
+                          );
+                        },
+                        child: const Text(
+                          "Connect",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:developer' show log;
+import 'dart:developer' as dev show log;
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offline_chat_exceptions.dart';
+import 'package:cryptochat/features/offline_chat/enums/call_status.dart';
 import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
@@ -17,8 +18,10 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
   final LocalChatService _localChat = LocalChatService();
   final AudioStreamService _audioStreamService = AudioStreamService();
 
+  StreamSubscription<OfflineMessage>? _messageSub;
+
   final StreamController<List<OfflineMessage>> _offlineMessagesController =
-      StreamController();
+      StreamController<List<OfflineMessage>>.broadcast();
 
   final List<OfflineMessage> _currentMessages = List.empty(growable: true);
 
@@ -56,7 +59,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
 
   Future<void> connect(String ip) async {
     final bool connected = await _localChat.connectToUser(ip: ip);
-    log("connected: $connected");
+    dev.log("connected: $connected");
     if (connected) {
       emit(
         OfflineChatConnectedState(serverIp: state.serverIp, isMicOpen: false),
@@ -66,17 +69,21 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         OfflineChatNoUserState(
           serverIp: state.serverIp,
           isMicOpen: false,
-          exception: FailedToConnectToServerException("Not connected"),
+          exception: FailedToConnectToServerException(
+            "Failed to connect to server",
+          ),
         ),
       );
     }
   }
 
   void listenToMessages() {
-    _localChat.messages.listen((message) {
+    final bool hasListener = _messageSub != null;
+    dev.log("listenToMessages called. hasListener: $hasListener");
+    if (hasListener) return;
+    _messageSub = _localChat.messages.listen((message) {
       switch (message.type) {
         case MessageType.text:
-          log("RECEIVED MESSAGE: ${message.data}");
           _currentMessages.add(message);
           _offlineMessagesController.add(_currentMessages);
           break;
@@ -85,8 +92,58 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
             Uint8List.fromList(message.data.cast<int>()),
           );
           break;
+        case MessageType.requestCall:
+          dev.log("RECEIVING CALL FROM: ${message.owner}");
+          emit(
+            OfflineChatCallState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+              callStatus: CallStatus.incoming,
+            ),
+          );
+          _localChat.notifyRinging();
+          break;
+        case MessageType.ringing:
+          // Change text to ringing
+          dev.log("RINGING...");
+          emit(
+            OfflineChatCallState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+              callStatus: CallStatus.ringing,
+            ),
+          );
+          break;
         case MessageType.connect:
-          log("CONNECT MESSAGE RECEIVED");
+          dev.log("CONNECT MESSAGE RECEIVED");
+          break;
+        case MessageType.refuseCall:
+          emit(
+            OfflineChatConnectedState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+            ),
+          );
+          break;
+        case MessageType.acceptCall:
+          dev.log("CALL ACCEPTED");
+          emit(
+            OfflineChatCallState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+              callStatus: CallStatus.live,
+            ),
+          );
+          // TODO open Mic
+          break;
+        case MessageType.endCall:
+          dev.log("CALL ENDED BY OTHER USER");
+          emit(
+            OfflineChatConnectedState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+            ),
+          );
           break;
         default:
           break;
@@ -112,6 +169,50 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
 
   Future<void> toggleAudio() async {
     emit(state.copyWith(isMicOpen: !state.isMicOpen));
+  }
+
+  Future<void> startVoiceConnection() async {
+    _localChat.startVoiceConnection();
+    emit(
+      OfflineChatCallState(
+        serverIp: state.serverIp,
+        isMicOpen: state.isMicOpen,
+        callStatus: CallStatus.connecting,
+      ),
+    );
+    dev.log("CALLING...");
+  }
+
+  Future<void> refuseCall() async {
+    _localChat.refuseCall();
+    emit(
+      OfflineChatConnectedState(
+        serverIp: state.serverIp,
+        isMicOpen: state.isMicOpen,
+      ),
+    );
+  }
+
+  Future<void> acceptCall() async {
+    _localChat.acceptCall();
+    emit(
+      OfflineChatCallState(
+        serverIp: state.serverIp,
+        isMicOpen: state.isMicOpen,
+        callStatus: CallStatus.live,
+      ),
+    );
+    // TODO: Open mic
+  }
+
+  Future<void> endCall() async {
+    _localChat.endCall();
+    emit(
+      OfflineChatConnectedState(
+        serverIp: state.serverIp,
+        isMicOpen: state.isMicOpen,
+      ),
+    );
   }
 
   bool isOwner(OfflineMessage msg) => _localChat.selfIp == msg.owner;
