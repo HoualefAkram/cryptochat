@@ -75,6 +75,11 @@ class _CallViewState extends State<CallView> {
                       if (state.callStatus == CallStatus.live) {
                         context.read<OfflineChatCubit>().endCall();
                       }
+
+                      if (state.callStatus == CallStatus.connecting ||
+                          state.callStatus == CallStatus.ringing) {
+                        context.read<OfflineChatCubit>().cancelCallRequest();
+                      }
                     },
                     child: Ink(
                       child: Container(

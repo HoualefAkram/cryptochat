@@ -3,6 +3,7 @@ enum MessageType {
   audio,
   connect,
   requestCall,
+  cancelRequestCall,
   ringing,
   refuseCall,
   acceptCall,
@@ -27,6 +28,8 @@ extension MessageTypeParser on MessageType {
         return MessageType.refuseCall;
       case "acceptCall":
         return MessageType.acceptCall;
+      case "cancelRequestCall":
+        return MessageType.cancelRequestCall;
       case "endCall":
         return MessageType.endCall;
       default:

@@ -246,6 +246,15 @@ class LocalChatService {
     activeSocket?.add(data);
   }
 
+  Future<void> cancelCallRequest() async {
+    final Uint8List data = ComProtocol.encode(
+      type: MessageType.cancelRequestCall,
+      owner: _selfServerIp!,
+      data: null,
+    );
+    activeSocket?.add(data);
+  }
+
   Future<void> endCall() async {
     final Uint8List data = ComProtocol.encode(
       type: MessageType.endCall,

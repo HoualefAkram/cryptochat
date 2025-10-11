@@ -151,6 +151,15 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
           );
           stopAudio();
           break;
+
+        case MessageType.cancelRequestCall:
+          emit(
+            OfflineChatConnectedState(
+              serverIp: state.serverIp,
+              isMicOpen: state.isMicOpen,
+            ),
+          );
+          break;
         default:
           break;
       }
@@ -221,6 +230,16 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     );
 
     stopAudio(); // STOP MICROPHONE / RECEIVER
+  }
+
+  Future<void> cancelCallRequest() async {
+    _localChat.cancelCallRequest();
+    emit(
+      OfflineChatConnectedState(
+        serverIp: state.serverIp,
+        isMicOpen: state.isMicOpen,
+      ),
+    );
   }
 
   bool isOwner(OfflineMessage msg) => _localChat.selfIp == msg.owner;
