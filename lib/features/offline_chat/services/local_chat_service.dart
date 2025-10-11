@@ -55,6 +55,18 @@ class LocalChatService {
     await audioService.startReceiving();
   }
 
+  Future<void> stopRecordingAudio({
+    required AudioStreamService audioService,
+  }) async {
+    audioService.stopListening();
+  }
+
+  Future<void> stopReceivingAudio({
+    required AudioStreamService audioService,
+  }) async {
+    audioService.stopReceiving();
+  }
+
   Future<bool> connectToUser({required String ip}) async {
     final completer = Completer<bool>();
 

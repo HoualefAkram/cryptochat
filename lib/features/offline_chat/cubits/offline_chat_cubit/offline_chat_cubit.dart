@@ -40,6 +40,11 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     );
   }
 
+  Future<void> stopAudio() async {
+    await _localChat.stopReceivingAudio(audioService: _audioStreamService);
+    await _localChat.stopReceivingAudio(audioService: _audioStreamService);
+  }
+
   Future<String> startServer() async {
     final String ip = await _localChat.startServer(
       onClientConnected: () {
@@ -134,7 +139,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               callStatus: CallStatus.live,
             ),
           );
-          // TODO open Mic
+          initAudio(); // OPEN MICROPHONE / RECEIVER
           break;
         case MessageType.endCall:
           dev.log("CALL ENDED BY OTHER USER");
@@ -167,7 +172,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     _localChat.sendAudio(pcm);
   }
 
-  Future<void> toggleAudio() async {
+  Future<void> toggleMicrophone() async {
     emit(state.copyWith(isMicOpen: !state.isMicOpen));
   }
 
@@ -202,7 +207,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         callStatus: CallStatus.live,
       ),
     );
-    // TODO: Open mic
+    initAudio(); // OPEN MICROPHONE / RECEIVER
   }
 
   Future<void> endCall() async {
@@ -213,6 +218,8 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         isMicOpen: state.isMicOpen,
       ),
     );
+
+    stopAudio(); // STOP MICROPHONE / RECEIVER
   }
 
   bool isOwner(OfflineMessage msg) => _localChat.selfIp == msg.owner;
