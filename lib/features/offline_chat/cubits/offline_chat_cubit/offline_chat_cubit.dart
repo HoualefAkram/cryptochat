@@ -7,6 +7,7 @@ import 'package:cryptochat/features/offline_chat/cubits/offline_chat_cubit/offli
 import 'package:cryptochat/features/offline_chat/enums/call_status.dart';
 import 'package:cryptochat/features/offline_chat/enums/message_type.dart';
 import 'package:cryptochat/features/offline_chat/models/offline_message.dart';
+import 'package:cryptochat/features/offline_chat/services/audio_effect_service.dart';
 import 'package:cryptochat/features/offline_chat/services/audio_stream_service.dart';
 import 'package:cryptochat/features/offline_chat/services/local_chat_service.dart';
 
@@ -17,6 +18,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
     : super(OfflineChatNoUserState(serverIp: "None", isMicOpen: true));
   final LocalChatService _localChat = LocalChatService();
   final AudioStreamService _audioStreamService = AudioStreamService();
+  final AudioEffectService _audioEffectService = AudioEffectService();
 
   StreamSubscription<OfflineMessage>? _messageSub;
 
@@ -115,6 +117,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               callStatus: CallStatus.incoming,
             ),
           );
+          _audioEffectService.playRingtone();
           _localChat.notifyRinging();
           break;
         case MessageType.ringing:
@@ -127,6 +130,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               callStatus: CallStatus.ringing,
             ),
           );
+          _audioEffectService.playRinging();
           break;
         case MessageType.connect:
           dev.log("CONNECT MESSAGE RECEIVED");
@@ -138,6 +142,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               isMicOpen: state.isMicOpen,
             ),
           );
+          _audioEffectService.stop();
           break;
         case MessageType.acceptCall:
           dev.log("CALL ACCEPTED");
@@ -148,6 +153,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               callStatus: CallStatus.live,
             ),
           );
+          _audioEffectService.stop();
           initAudio(); // OPEN MICROPHONE / RECEIVER
           break;
         case MessageType.endCall:
@@ -158,6 +164,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               isMicOpen: state.isMicOpen,
             ),
           );
+          _audioEffectService.stop();
           stopAudio();
           break;
 
@@ -168,6 +175,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
               isMicOpen: state.isMicOpen,
             ),
           );
+          _audioEffectService.stop();
           break;
         default:
           break;
@@ -205,6 +213,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
       ),
     );
     dev.log("CALLING...");
+    _audioEffectService.playConnecting();
   }
 
   Future<void> refuseCall() async {
@@ -215,6 +224,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         isMicOpen: state.isMicOpen,
       ),
     );
+    _audioEffectService.stop();
   }
 
   Future<void> acceptCall() async {
@@ -227,6 +237,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
       ),
     );
     initAudio(); // OPEN MICROPHONE / RECEIVER
+    _audioEffectService.stop();
   }
 
   Future<void> endCall() async {
@@ -237,7 +248,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         isMicOpen: state.isMicOpen,
       ),
     );
-
+    _audioEffectService.stop();
     stopAudio(); // STOP MICROPHONE / RECEIVER
   }
 
@@ -249,6 +260,7 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
         isMicOpen: state.isMicOpen,
       ),
     );
+    _audioEffectService.stop();
   }
 
   bool isOwner(OfflineMessage msg) => _localChat.selfIp == msg.owner;
