@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Cryptochat</string>
+	<string>M2RT</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>cryptochat</string>
+	<string>M2RT</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -45,5 +45,30 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+
+		<!-- Permissions -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>App requires Bluetooth access to connect and communicate with the camera.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>App requires Bluetooth access to discover and connect to cameras.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take pictures for use in the app's walkthrough or timeline features.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>App requires local network access to connect to the camera device.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location to connect to Wi-Fi networks and detect nearby cameras, even when the app is in the background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to detect nearby cameras at all times.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to connect to Wi-Fi networks while you are using the app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone to record audio for walkthroughs or timeline entries.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to select a photo as a floor plan or background image.</string>
+
 </dict>
+
+
+
 </plist>
