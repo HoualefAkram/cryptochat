@@ -213,7 +213,6 @@ class OfflineChatCubit extends Cubit<OfflineChatState> {
       ),
     );
     dev.log("CALLING...");
-    _audioEffectService.playConnecting();
   }
 
   Future<void> refuseCall() async {

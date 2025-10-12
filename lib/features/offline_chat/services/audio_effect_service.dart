@@ -21,11 +21,6 @@ class AudioEffectService {
     await _player.disposeAllSources();
   }
 
-  Future<void> playConnecting() async {
-    // dial up
-    _play(CAudio.connecting);
-  }
-
   Future<void> playRinging() async {
     // ringback
     _play(CAudio.ringback);

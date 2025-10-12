@@ -92,10 +92,15 @@ class _OfflineChatViewState extends State<OfflineChatView> {
                   ),
                   Container(
                     margin: EdgeInsets.all(12),
-                    child: Icon(
-                      Icons.videocam,
-                      color: Theme.of(context).primaryColor,
-                      size: 28,
+                    child: InkWell(
+                      onTap: () {
+                        // TODO: video call
+                      },
+                      child: Icon(
+                        Icons.videocam,
+                        color: Theme.of(context).primaryColor,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ],
